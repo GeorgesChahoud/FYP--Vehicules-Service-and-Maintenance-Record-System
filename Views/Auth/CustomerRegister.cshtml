@@ -30,6 +30,27 @@
 
     <!-- Template Stylesheet -->
     <link href="~/css/style.css" rel="stylesheet">
+
+    <style>
+
+
+
+
+        .container-fluid, .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-to-top {
+            display: none !important;
+        }
+
+        .booking {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            background-color: transparent !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -40,17 +61,17 @@
         </div>
     </div>
     <!-- Spinner End -->
-    <!-- Topbar Start -->
-    
-    <!-- Topbar End -->
-    <!-- Navbar Start -->
-   
-    <!-- Navbar End -->
-    <div>
-        <a href="@Url.Action("SelectRole", "Auth")" class="nav-item nav-link">Back to Main Menu</a>
-    </div>
     <!-- Registration Form Start -->
-    <div class="container-fluid bg-secondary booking my-5 wow fadeInUp" data-wow-delay="0.1s">
+    <div class="container-fluid bg-dark booking my-5 wow fadeInUp" data-wow-delay="0.1s">
+        <!-- Back to Main Menu -->
+        <div class="container" style="position: relative;" ;>
+            <a href="@Url.Action("SelectRole", "Auth")"
+               class="btn btn-outline-light"
+               onmouseover="this.style.backgroundColor='white'; this.style.color='red'; this.style.borderColor='white';"
+               onmouseout="this.style.backgroundColor='transparent'; this.style.color='white'; this.style.borderColor='white';" style="margin-top:20px">
+                <i class="fa fa-arrow-left me-2"></i>Back to Main Menu
+            </a>
+        </div>
         <div class="container">
             <div class="row gx-5">
                 <div class="col-lg-6 py-5">
@@ -97,6 +118,7 @@
                 <div class="col-lg-6">
                     <div class="bg-primary h-100 d-flex flex-column justify-content-center text-center p-5 wow zoomIn" data-wow-delay="0.6s">
                         <h1 class="text-white mb-4">Create Your Account</h1>
+
                         @if (ViewBag.ErrorMessage != null)
                         {
                             <div class="alert alert-danger" role="alert">
@@ -105,7 +127,16 @@
                             </div>
                         }
 
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="alert alert-success" role="alert">
+                                <i class="fa fa-check-circle me-2"></i>
+                                @TempData["SuccessMessage"]
+                            </div>
+                        }
+
                         <form method="post" asp-action="CustomerRegister" asp-controller="Auth">
+                            @Html.AntiForgeryToken()
                             <div class="row g-3">
                                 <!-- Personal Information Section -->
                                 <div class="col-12">
@@ -127,32 +158,12 @@
                                     <input type="text" class="form-control border-0" placeholder="Full Address" name="Address" required style="height: 55px;">
                                 </div>
 
-                                <!-- Vehicle Information Section -->
-                                <div class="col-12 mt-4">
-                                    <h5 class="text-white text-start mb-3"><i class="fa fa-car me-2"></i>Vehicle Information</h5>
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    <input type="text" class="form-control border-0" placeholder="Car Make (e.g., Toyota)" name="CarMake" required style="height: 55px;">
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    <input type="text" class="form-control border-0" placeholder="Car Model (e.g., Camry)" name="CarModel" required style="height: 55px;">
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    <input type="number" class="form-control border-0" placeholder="Year" name="CarYear" min="1990" max="2024" required style="height: 55px;">
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    <input type="text" class="form-control border-0" placeholder="Plate Number" name="PlateNumber" required style="height: 55px;">
-                                </div>
-                                <div class="col-12">
-                                    <input type="text" class="form-control border-0" placeholder="VIN Number (17 characters)" name="Vin" maxlength="17" required style="height: 55px;">
-                                </div>
-
                                 <!-- Account Security Section -->
                                 <div class="col-12 mt-4">
                                     <h5 class="text-white text-start mb-3"><i class="fa fa-lock me-2"></i>Account Security</h5>
                                 </div>
                                 <div class="col-12">
-                                    <input type="password" class="form-control border-0" placeholder="Password" name="Password" required style="height: 55px;">
+                                    <input type="password" class="form-control border-0" placeholder="Password (min 6 characters)" name="Password" required minlength="6" style="height: 55px;">
                                 </div>
                                 <div class="col-12">
                                     <input type="password" class="form-control border-0" placeholder="Confirm Password" name="ConfirmPassword" required style="height: 55px;">
@@ -161,7 +172,7 @@
                                 <!-- Terms and Submit -->
                                 <div class="col-12 text-start mt-3">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="AgreeToTerms" id="agreeTerms" required>
+                                        <input class="form-check-input" type="checkbox" name="AgreeToTerms" id="agreeTerms" value="true" required>
                                         <label class="form-check-label text-white" for="agreeTerms">
                                             I agree to the <a href="#" class="text-white text-decoration-underline">Terms of Service</a> and <a href="#" class="text-white text-decoration-underline">Privacy Policy</a>
                                         </label>
@@ -186,11 +197,7 @@
         </div>
     </div>
     <!-- Registration Form End -->
-   
-    <!-- Footer End -->
     <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

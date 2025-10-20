@@ -38,7 +38,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.HasIndex("UserID")
                         .IsUnique();
 
-                    b.ToTable("Admin");
+                    b.ToTable("Admin", (string)null);
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Appointment", b =>
@@ -64,7 +64,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 
                     b.HasIndex("StatusID");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Car", b =>
@@ -100,7 +100,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Cars");
+                    b.ToTable("Cars", (string)null);
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Customer", b =>
@@ -123,7 +123,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.HasIndex("UserID")
                         .IsUnique();
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Employee", b =>
@@ -153,7 +153,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.HasIndex("UserID")
                         .IsUnique();
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Part", b =>
@@ -179,7 +179,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Parts");
+                    b.ToTable("Parts", (string)null);
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.PartService", b =>
@@ -202,7 +202,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 
                     b.HasIndex("ServiceID");
 
-                    b.ToTable("PartServices");
+                    b.ToTable("PartServices", (string)null);
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Receipt", b =>
@@ -227,7 +227,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.HasIndex("AppointmentID")
                         .IsUnique();
 
-                    b.ToTable("Receipts");
+                    b.ToTable("Receipts", (string)null);
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.ReceiptService", b =>
@@ -250,7 +250,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 
                     b.HasIndex("ServiceID");
 
-                    b.ToTable("ReceiptServices");
+                    b.ToTable("ReceiptServices", (string)null);
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Role", b =>
@@ -267,7 +267,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -305,7 +305,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Status", b =>
@@ -322,7 +322,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Status");
+                    b.ToTable("Status", (string)null);
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.User", b =>
@@ -360,7 +360,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 
                     b.HasIndex("RoleID");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new

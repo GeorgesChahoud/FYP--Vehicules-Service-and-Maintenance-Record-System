@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>CarServ - Employee Login</title>
+    <title>CarServ - Customer Login</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -30,32 +30,63 @@
 
     <!-- Template Stylesheet -->
     <link href="~/css/style.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('/img/pictureFYP.jpg');
+            background-size: cover;
+            min-height: 100vh;
+            position: relative;
+        }
+
+            body::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.6);
+                z-index: 0;
+            }
+
+        .container-xxl {
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-to-top {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body>
     <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div id="spinner" class="show position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center" style="background: rgba(0, 0, 0, 0.8); z-index: 9999;">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
             <span class="sr-only">Loading...</span>
         </div>
     </div>
     <!-- Spinner End -->
-   
-    <!-- Topbar End -->
-    <!-- Navbar Start -->
-   
-    <!-- Navbar End -->
-    <div>
-        <a href="@Url.Action("SelectRole", "Auth")" class="nav-item nav-link">Back to Main Menu</a>
+    <!-- Back to Main Menu -->
+    <div class="container mt-3" style="position: relative; z-index: 10000;">
+        <a href="@Url.Action("SelectRole", "Auth")"
+           class="btn btn-outline-light"
+           onmouseover="this.style.backgroundColor='white'; this.style.color='red'; this.style.borderColor='white';"
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='white'; this.style.borderColor='white';">
+            <i class="fa fa-arrow-left me-2"></i>Back to Main Menu
+        </a>
     </div>
+
     <!-- Login Form Start -->
     <div class="container-xxl py-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-5">
-                    <div class="bg-dark secondary rounded h-100 d-flex flex-column justify-content-center text-center p-5 wow zoomIn" data-wow-delay="0.6s">
-                        <h1 class="text-primary mb-4"><i class="fa fa-users-cog me-3"></i>Employee Login</h1>
-                        <p class="text- mb-4">Access your work dashboard and manage customer services</p>
+                    <div class="bg-dark rounded h-100 d-flex flex-column justify-content-center text-center p-5 wow zoomIn" data-wow-delay="0.6s">
+                        <h1 class="text-primary mb-4"><i class="fa fa-user me-3"></i>Customer Login</h1>
+                        <p class="text-white mb-4">Welcome back! Please login to your account</p>
+
                         @if (ViewBag.ErrorMessage != null)
                         {
                             <div class="alert alert-danger" role="alert">
@@ -72,30 +103,31 @@
                             </div>
                         }
 
-                        <form method="post" asp-action="EmployeeLogin" asp-controller="Auth">
+                        <form method="post" asp-action="CustomerLogin" asp-controller="Auth">
+                            @Html.AntiForgeryToken()
                             <div class="row g-3">
                                 <div class="col-12">
-                                    <input type="email" class="form-control border-0" placeholder="Work Email Address" name="Email" required style="height: 55px;">
+                                    <input type="email" class="form-control border-0" placeholder="Email Address" name="Email" required style="height: 55px;">
                                 </div>
                                 <div class="col-12">
                                     <input type="password" class="form-control border-0" placeholder="Password" name="Password" required style="height: 55px;">
                                 </div>
                                 <div class="col-12 text-start">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="RememberMe" id="rememberMeEmp">
-                                        <label class="form-check-label text" for="rememberMeEmp">
+                                        <input class="form-check-input" type="checkbox" name="RememberMe" id="rememberMe" value="true">
+                                        <label class="form-check-label text-white" for="rememberMe">
                                             Remember me
                                         </label>
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <button class="btn btn-primary w-100 py-3" type="submit">Login to Dashboard</button>
+                                    <button class="btn btn-primary w-100 py-3" type="submit">Login</button>
                                 </div>
                                 <div class="col-12">
-                                    <a href="#">Forgot Password?</a>
+                                    <p class="text-white mb-0">Don't have an account? <a href="@Url.Action("CustomerRegister", "Auth")" class="text-primary">Register here</a></p>
                                 </div>
-                                <div class="col-12 mt-4">
-                                    <p class="mb-0"><small>Employee access only. Contact admin for account issues.</small></p>
+                                <div class="col-12">
+                                    <a href="@Url.Action("ForgotPassword", "Auth")" class="text-white">Forgot Password?</a>
                                 </div>
                             </div>
                         </form>
@@ -105,12 +137,7 @@
         </div>
     </div>
     <!-- Login Form End -->
-    <!-- Footer Start -->
-    
-    <!-- Footer End -->
     <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
