@@ -44,6 +44,13 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Data
                new User { ID = 4, RoleID = 1, FirstName = "Anthony", LastName = "Chahine", Email = "anthonychahine@carhub-garage.com", Password = "ACH@Car#7", PhoneNumber = "+96181866298" }
            );
 
+            modelBuilder.Entity<Admin>().HasData(
+                new Admin { ID = 1, UserID = 1 },
+                new Admin { ID = 2, UserID = 2 },
+                new Admin { ID = 3, UserID = 3 },
+                new Admin { ID = 4, UserID = 4 }
+            );
+
             //// ---------------- Admin <-> User ----------------
             //modelBuilder.Entity<Admin>()
             //    .HasOne(c => c.User)
