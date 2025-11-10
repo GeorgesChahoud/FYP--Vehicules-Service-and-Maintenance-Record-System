@@ -1,0 +1,120 @@
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Create Employee";
+    ViewData["PageHeader"] = "Create New Employee";
+    ViewData["PageSubtitle"] = "Add a new staff member to the system";
+    ViewData["ActivePage"] = "Employees";
+}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show wow fadeInDown" role="alert">
+                        <i class="fa fa-exclamation-triangle me-2"></i>
+                        @ViewBag.ErrorMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <div class="bg-light rounded p-5 wow fadeInUp" data-wow-delay="0.3s">
+                    <form method="post" asp-action="CreateEmployee" asp-controller="Admin">
+                        @Html.AntiForgeryToken()
+                        
+                        <!-- Personal Information Section -->
+                        <div class="mb-4">
+                            <h4 class="text-primary mb-4">
+                                <i class="fa fa-user me-2"></i>Personal Information
+                            </h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="firstName" name="FirstName" placeholder="First Name" required>
+                                        <label for="firstName"><i class="fa fa-user text-primary me-2"></i>First Name *</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="lastName" name="LastName" placeholder="Last Name" required>
+                                        <label for="lastName"><i class="fa fa-user text-primary me-2"></i>Last Name *</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="email" class="form-control" id="email" name="Email" placeholder="Email" required>
+                                        <label for="email"><i class="fa fa-envelope text-primary me-2"></i>Email Address *</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="tel" class="form-control" id="phone" name="PhoneNumber" placeholder="Phone" required>
+                                        <label for="phone"><i class="fa fa-phone text-primary me-2"></i>Phone Number *</label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <input type="password" class="form-control" id="password" name="Password" placeholder="Password" required minlength="6">
+                                        <label for="password"><i class="fa fa-lock text-primary me-2"></i>Password *</label>
+                                    </div>
+                                    <small class="text-muted">Minimum 6 characters required</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Employment Details Section -->
+                        <div class="mb-4">
+                            <h4 class="text-primary mb-4">
+                                <i class="fa fa-briefcase me-2"></i>Employment Details
+                            </h4>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="shift" name="Shift" required>
+                                            <option value="">Choose Shift</option>
+                                            <option value="Morning">Morning</option>
+                                            <option value="Afternoon">Afternoon</option>
+                                            <option value="Evening">Evening</option>
+                                            <option value="Night">Night</option>
+                                        </select>
+                                        <label for="shift"><i class="fa fa-clock text-primary me-2"></i>Work Shift *</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="workHours" name="WorkHours" placeholder="Work Hours" required>
+                                        <label for="workHours"><i class="fa fa-calendar text-primary me-2"></i>Work Hours *</label>
+                                    </div>
+                                    <small class="text-muted">e.g., 8:00 AM - 4:00 PM</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="fee" name="FeeByService" placeholder="Fee" step="0.01" min="0" required>
+                                        <label for="fee"><i class="fa fa-dollar-sign text-primary me-2"></i>Fee Per Service *</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="row g-3 mt-4">
+                            <div class="col-sm-6">
+                                <button type="submit" class="btn btn-primary w-100 py-3">
+                                    <i class="fa fa-save me-2"></i>Create Employee
+                                </button>
+                            </div>
+                            <div class="col-sm-6">
+                                <a href="@Url.Action("Employees", "Admin")" class="btn btn-secondary w-100 py-3">
+                                    <i class="fa fa-times me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

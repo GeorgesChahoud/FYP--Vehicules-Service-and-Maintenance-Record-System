@@ -85,6 +85,13 @@
                 <a href="#home" class="nav-item nav-link active">Home</a>
                 <a href="#about" class="nav-item nav-link">About</a>
                 <a href="#services" class="nav-item nav-link">Services</a>
+                
+                @* Show My Cars link if customer is logged in *@
+                @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Customer"))
+                {
+                    <a href="@Url.Action("Index", "Car")" class="nav-item nav-link">My Cars</a>
+                }
+                
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                     <div class="dropdown-menu fade-up m-0">
@@ -95,10 +102,23 @@
                 </div>
             </div>
 
-            <a asp-controller="Home" asp-action="Contact"
-               class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">
-                Contact<i class="fa fa-arrow-right ms-3"></i>
-            </a>
+            @* Show logout if authenticated, otherwise show contact *@
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <form method="post" asp-action="Logout" asp-controller="Auth" class="d-none d-lg-block">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-primary py-4 px-lg-5">
+                        Logout<i class="fa fa-sign-out-alt ms-3"></i>
+                    </button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Home" asp-action="Contact"
+                   class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">
+                    Contact<i class="fa fa-arrow-right ms-3"></i>
+                </a>
+            }
         </div>
     </nav>
     <!-- Navbar End -->
@@ -398,37 +418,107 @@
                 <div class="col-lg-6">
                     <div class="bg-primary h-100 d-flex flex-column justify-content-center text-center p-5 wow zoomIn" data-wow-delay="0.6s">
                         <h1 class="text-white mb-4">Book For A Service</h1>
-                        <form>
-                            <div class="row g-3">
-                                <div class="col-12 col-sm-6">
-                                    <input type="text" class="form-control border-0" placeholder="Your Name" style="height: 55px;">
+                        
+                        @* Check if user is logged in *@
+                        @if (User.Identity == null || !User.Identity.IsAuthenticated)
+                        {
+                            <div class="alert alert-warning">
+                                <p class="mb-0 text-dark">
+                                    <i class="fa fa-info-circle me-2"></i>
+                                    Please <a href="@Url.Action("CustomerLogin", "Auth")" class="text-primary fw-bold">login</a> to book an appointment.
+                                </p>
+                            </div>
+                        }
+                        else if (ViewBag.UserCars == null || !((System.Collections.Generic.IEnumerable<dynamic>)ViewBag.UserCars).Any())
+                        {
+                            <div class="alert alert-warning">
+                                <p class="mb-0 text-dark">
+                                    <i class="fa fa-car me-2"></i>
+                                    Please <a href="@Url.Action("Create", "Car")" class="text-primary fw-bold">add a car</a> first to book an appointment.
+                                </p>
+                            </div>
+                        }
+                        else if (ViewBag.Services == null || !((System.Collections.Generic.IEnumerable<dynamic>)ViewBag.Services).Any())
+                        {
+                            <div class="alert alert-warning">
+                                <p class="mb-0 text-dark">
+                                    <i class="fa fa-tools me-2"></i>
+                                    No services available at the moment. Please contact us directly or check back later.
+                                </p>
+                            </div>
+                        }
+                        else
+                        {
+                            @if (TempData["SuccessMessage"] != null)
+                            {
+                                <div class="alert alert-success alert-dismissible fade show mb-3">
+                                    <i class="fa fa-check-circle me-2"></i>
+                                    @TempData["SuccessMessage"]
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
-                                <div class="col-12 col-sm-6">
-                                    <input type="email" class="form-control border-0" placeholder="Your Email" style="height: 55px;">
+                            }
+                            
+                            @if (TempData["ErrorMessage"] != null)
+                            {
+                                <div class="alert alert-danger alert-dismissible fade show mb-3">
+                                    <i class="fa fa-exclamation-triangle me-2"></i>
+                                    @TempData["ErrorMessage"]
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
-                                <div class="col-12 col-sm-6">
-                                    <select class="form-select border-0" style="height: 55px;">
-                                        <option selected>Select A Service</option>
-                                        <option value="1">Service 1</option>
-                                        <option value="2">Service 2</option>
-                                        <option value="3">Service 3</option>
-                                    </select>
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    <div class="date" id="date1" data-target-input="nearest">
-                                        <input type="text"
-                                               class="form-control border-0 datetimepicker-input"
-                                               placeholder="Service Date" data-target="#date1" data-toggle="datetimepicker" style="height: 55px;">
+                            }
+                            
+                            <form method="post" asp-controller="Appointment" asp-action="BookAppointment">
+                                @Html.AntiForgeryToken()
+                                <div class="row g-3">
+                                    @* Car Selection Dropdown *@
+                                    <div class="col-12">
+                                        <select class="form-select border-0" name="CarID" style="height: 55px;" required>
+                                            <option value="">Select Your Car</option>
+                                            @foreach (var car in ViewBag.UserCars)
+                                            {
+                                                <option value="@car.ID">@car.Year @car.Make @car.Model - @car.PlateNumber</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    
+                                    @* Service Selection Dropdown *@
+                                    <div class="col-12">
+                                        <select class="form-select border-0" name="ServiceID" style="height: 55px;" required>
+                                            <option value="">Select A Service</option>
+                                            @foreach (var service in ViewBag.Services)
+                                            {
+                                                <option value="@service.ID">@service.ServiceName</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    
+                                    @* Appointment Date/Time *@
+                                    <div class="col-12">
+                                        <input type="datetime-local" 
+                                               class="form-control border-0" 
+                                               name="ScheduleAppointment" 
+                                               style="height: 55px;" 
+                                               min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
+                                               required>
+                                    </div>
+                                    
+                                    @* Special Request (Optional) *@
+                                    <div class="col-12">
+                                        <textarea class="form-control border-0" 
+                                                  name="SpecialRequest" 
+                                                  placeholder="Special Request (Optional)" 
+                                                  rows="3"></textarea>
+                                    </div>
+                                    
+                                    @* Submit Button *@
+                                    <div class="col-12">
+                                        <button class="btn btn-secondary w-100 py-3" type="submit">
+                                            <i class="fa fa-calendar-check me-2"></i>Book Now
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="col-12">
-                                    <textarea class="form-control border-0" placeholder="Special Request"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <button class="btn btn-secondary w-100 py-3" type="submit">Book Now</button>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        }
                     </div>
                 </div>
             </div>

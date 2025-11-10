@@ -1,0 +1,58 @@
+@model FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Part
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Edit Part";
+    ViewData["PageHeader"] = "Edit Part";
+    ViewData["PageSubtitle"] = "Update part information";
+    ViewData["ActivePage"] = "Parts";
+}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger wow fadeInDown">@ViewBag.ErrorMessage</div>
+                }
+                <div class="bg-light rounded p-5 wow fadeInUp" data-wow-delay="0.3s">
+                    <form method="post" asp-action="EditPart">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="ID" value="@Model.ID" />
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="PartName" value="@Model.PartName" required>
+                            <label><i class="fa fa-cog text-primary me-2"></i>Part Name *</label>
+                        </div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" name="Price" value="@Model.Price" step="0.01" min="0" required>
+                                    <label><i class="fa fa-dollar-sign text-primary me-2"></i>Price *</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" name="Quantity" value="@Model.Quantity" min="0" required>
+                                    <label><i class="fa fa-boxes text-primary me-2"></i>Quantity *</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <button type="submit" class="btn btn-primary w-100 py-3">
+                                    <i class="fa fa-save me-2"></i>Update Part
+                                </button>
+                            </div>
+                            <div class="col-sm-6">
+                                <a href="@Url.Action("Parts", "Admin")" class="btn btn-secondary w-100 py-3">
+                                    <i class="fa fa-times me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

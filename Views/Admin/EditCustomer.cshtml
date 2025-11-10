@@ -1,0 +1,98 @@
+@model FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Customer
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Edit Customer";
+    ViewData["PageHeader"] = "Edit Customer";
+    ViewData["PageSubtitle"] = "Update customer information";
+    ViewData["ActivePage"] = "Customers";
+}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show wow fadeInDown">
+                        <i class="fa fa-exclamation-triangle me-2"></i>
+                        @ViewBag.ErrorMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <div class="bg-light rounded p-5 wow fadeInUp" data-wow-delay="0.3s">
+                    <form method="post" asp-action="EditCustomer">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="ID" value="@Model.ID" />
+                        <input type="hidden" name="UserID" value="@Model.UserID" />
+                        
+                        <div class="mb-4">
+                            <h4 class="text-primary mb-4">
+                                <i class="fa fa-user me-2"></i>Personal Information
+                            </h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="FirstName" value="@Model.User.FirstName" required />
+                                        <label><i class="fa fa-user text-primary me-2"></i>First Name *</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="LastName" value="@Model.User.LastName" required />
+                                        <label><i class="fa fa-user text-primary me-2"></i>Last Name *</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="email" class="form-control" name="Email" value="@Model.User.Email" required />
+                                        <label><i class="fa fa-envelope text-primary me-2"></i>Email Address *</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="tel" class="form-control" name="PhoneNumber" value="@Model.User.PhoneNumber" required />
+                                        <label><i class="fa fa-phone text-primary me-2"></i>Phone Number *</label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <input type="password" class="form-control" name="Password" minlength="6" />
+                                        <label><i class="fa fa-lock text-primary me-2"></i>New Password (Optional)</label>
+                                    </div>
+                                    <small class="text-muted">Leave blank to keep current password</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="mb-4">
+                            <h4 class="text-primary mb-4">
+                                <i class="fa fa-map-marker-alt me-2"></i>Address Information
+                            </h4>
+                            <div class="form-floating">
+                                <textarea class="form-control" name="Address" style="height: 100px" required>@Model.Address</textarea>
+                                <label><i class="fa fa-map-marker-alt text-primary me-2"></i>Complete Address *</label>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-4">
+                            <div class="col-sm-6">
+                                <button type="submit" class="btn btn-primary w-100 py-3">
+                                    <i class="fa fa-save me-2"></i>Update Customer
+                                </button>
+                            </div>
+                            <div class="col-sm-6">
+                                <a href="@Url.Action("Customers", "Admin")" class="btn btn-secondary w-100 py-3">
+                                    <i class="fa fa-times me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

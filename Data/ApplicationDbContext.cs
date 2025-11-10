@@ -38,7 +38,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Data
             );
 
             modelBuilder.Entity<User>().HasData(
-               new User { ID = 1, RoleID = 1, FirstName = "Georges", LastName = "Chahoud", Email = "georgeschahoud@carhub-garage.com", Password = "GCH@Car#9", PhoneNumber = "+96103021684" },
+               new User { ID = 1, RoleID = 1, FirstName = "Georges", LastName = "Chahoud", Email = "georgeschahoud@carhub-garage.com", Password = "$2b$12$TqAIGuLhqvCALgZa5A6h5OVurELuLH6a1SA1VUfIOuYZV/xZTtd.W", PhoneNumber = "+96103021684" },
                new User { ID = 2, RoleID = 1, FirstName = "Christopher", LastName = "Hanna Nehme", Email = "christopherhannanehme@carhub-garage.com", Password = "CHN@Car#3", PhoneNumber = "+96181651808" },
                new User { ID = 3, RoleID = 1, FirstName = "Elias", LastName = "Azar", Email = "eliasazar@carhub-garage.com", Password = "EAZ@Car#5", PhoneNumber = "+96171750758" },
                new User { ID = 4, RoleID = 1, FirstName = "Anthony", LastName = "Chahine", Email = "anthonychahine@carhub-garage.com", Password = "ACH@Car#7", PhoneNumber = "+96181866298" }

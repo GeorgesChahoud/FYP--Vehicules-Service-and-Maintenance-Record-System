@@ -1,0 +1,172 @@
+@model IEnumerable<FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Car>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My Cars - CarHub</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Favicon -->
+    <link href="~/img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600;700&family=Ubuntu:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="~/lib/animate/animate.css" rel="stylesheet">
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+        <a href="@Url.Action("Index", "Home")" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+            <h2 class="m-0 text-primary"><i class="fa fa-car me-3"></i>CarHub</h2>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="@Url.Action("Index", "Home")" class="nav-item nav-link">Home</a>
+                <a href="@Url.Action("Index", "Car")" class="nav-item nav-link active">My Cars</a>
+            </div>
+            <form method="post" asp-action="Logout" asp-controller="Auth" class="d-none d-lg-block">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-primary py-4 px-lg-5">
+                    Logout<i class="fa fa-sign-out-alt ms-3"></i>
+                </button>
+            </form>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header mb-5 p-0" style="background-image: url(/img/carousel-bg-1.jpg);">
+        <div class="container-fluid page-header-inner py-5">
+            <div class="container text-center">
+                <h1 class="display-3 text-white mb-3 animated slideInDown">My Garage</h1>
+                <p class="text-white">Manage Your Vehicles</p>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- My Cars Section Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show wow fadeInDown">
+                    <i class="fa fa-check-circle me-2"></i>
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show wow fadeInDown">
+                    <i class="fa fa-exclamation-triangle me-2"></i>
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <div class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
+                <h1 class="mb-4">My Vehicles</h1>
+                <a href="@Url.Action("Create", "Car")" class="btn btn-primary py-3 px-5">
+                    <i class="fa fa-plus me-2"></i>Add New Car
+                </a>
+            </div>
+
+            @if (Model != null && Model.Any())
+            {
+                <div class="row g-4">
+                    @foreach (var car in Model)
+                    {
+                        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                            <div class="service-item bg-light rounded h-100 p-5">
+                                <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 65px; height: 65px;">
+                                    <i class="fa fa-car fa-2x text-primary"></i>
+                                </div>
+                                <h4 class="mb-3">@car.Year @car.Make @car.Model</h4>
+                                <p class="mb-2"><strong>Plate:</strong> @car.PlateNumber</p>
+                                @if (!string.IsNullOrEmpty(car.Vin))
+                                {
+                                    <p class="mb-4"><strong>VIN:</strong> @car.Vin</p>
+                                }
+                                <div class="d-flex gap-2">
+                                    <a href="@Url.Action("Edit", "Car", new { id = car.ID })" class="btn btn-warning btn-sm flex-fill">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </a>
+                                    <form method="post" asp-action="Delete" asp-route-id="@car.ID" class="flex-fill">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-danger btn-sm w-100" onclick="return confirm('Delete this car?')">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center mt-4 wow fadeInUp">
+                    <i class="fa fa-info-circle me-2"></i>
+                    You haven't added any cars yet. Click "Add New Car" to get started.
+                </div>
+            }
+        </div>
+    </div>
+    <!-- My Cars Section End -->
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-light mb-4">Address</h4>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, Beirut, Lebanon</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+961 03 866 298</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>CarHub@gmail.com</p>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-light mb-4">Quick Links</h4>
+                    <a class="btn btn-link" href="@Url.Action("Index", "Home")">Home</a>
+                    <a class="btn btn-link" href="@Url.Action("Index", "Car")">My Cars</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/wow/wow.js"></script>
+    <script src="~/lib/easing/easing.js"></script>
+    <script src="~/js/main.js"></script>
+</body>
+</html>
