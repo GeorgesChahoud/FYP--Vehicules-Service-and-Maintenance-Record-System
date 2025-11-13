@@ -110,8 +110,17 @@
                                     <input type="email" class="form-control border-0" placeholder="Work Email Address" name="Email" required style="height: 55px;">
                                 </div>
                                 <div class="col-12">
-                                    <input type="password" class="form-control border-0" placeholder="Password" name="Password" required style="height: 55px;">
+                                    <div class="input-group">
+                                        <input type="password" class="form-control border-0"
+                                               placeholder="Password" name="Password"
+                                               id="EmployeePassword" required style="height: 55px;">
+
+                                        <span class="input-group-text bg-white" style="cursor: pointer;" id="toggleEmployeePassword">
+                                            <i class="fa fa-eye" id="toggleEmployeePasswordIcon"></i>
+                                        </span>
+                                    </div>
                                 </div>
+
                                 <div class="col-12 text-start">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="RememberMe" id="rememberMeEmp" value="true">
@@ -143,6 +152,21 @@
     <script src="~/lib/waypoints/waypoints.min.js"></script>
     <script src="~/lib/counterup/counterup.min.js"></script>
     <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script>
+        const empPassword = document.getElementById("EmployeePassword");
+        const toggleEmpPassword = document.getElementById("toggleEmployeePassword");
+        const toggleEmpPasswordIcon = document.getElementById("toggleEmployeePasswordIcon");
+
+        toggleEmpPassword.addEventListener("click", () => {
+            const type = empPassword.getAttribute("type") === "password" ? "text" : "password";
+            empPassword.setAttribute("type", type);
+
+            // Switch eye ↔ eye slash
+            toggleEmpPasswordIcon.classList.toggle("fa-eye");
+            toggleEmpPasswordIcon.classList.toggle("fa-eye-slash");
+        });
+    </script>
+
 
     <!-- Template Javascript -->
     <script src="~/js/main.js"></script>

@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
 
 namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 {
@@ -16,17 +19,19 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
         private readonly IPasswordHasher _passwordHasher;
         private readonly IEncryptionService _encryptionService;
         private readonly IEmailService _emailService;
-
+        private readonly IConfiguration _configuration;
         public AuthController(
             ApplicationDbContext context,
             IPasswordHasher passwordHasher,
             IEncryptionService encryptionService,
-            IEmailService emailService)
+            IEmailService emailService,
+            IConfiguration configuration)
         {
             _context = context;
             _passwordHasher = passwordHasher;
             _encryptionService = encryptionService;
             _emailService = emailService;
+            _configuration = configuration;
         }
 
         // GET: Auth/SelectRole (Main Menu)
@@ -278,6 +283,21 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
             string Password,
             string ConfirmPassword)
         {
+            var captchaResponse = Request.Form["g-recaptcha-response"];
+            var secretKey = _configuration["GoogleReCAPTCHA:SecretKey"];
+
+            using(var client = new HttpClient())
+            {
+                var verificationUrl = $"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={captchaResponse}";
+                var googleResponse = await client.GetStringAsync(verificationUrl);
+                var captchaResult = JsonSerializer.Deserialize<GoogleReCaptchaResponse>(googleResponse);
+
+                if(captchaResult == null || !captchaResult.success)
+                {
+                    ViewBag.ErrorMessage = "Captcha verification failed. Please verify that you're not a robot.";
+                    return View("~/Views/Auth/CustomerRegister.cshtml");
+                }
+            }
             if (string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(LastName) ||
                 string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password) ||
                 string.IsNullOrEmpty(Address) || string.IsNullOrEmpty(PhoneNumber))
@@ -723,5 +743,11 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 return View("~/Views/Auth/ResetPassword.cshtml");
             }
         }
+    }
+
+    public class GoogleReCaptchaResponse
+    {
+        public bool success {  get; set; }
+        public List<string> error_codes { get; set; }
     }
 }

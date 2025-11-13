@@ -163,11 +163,29 @@
                                     <h5 class="text-white text-start mb-3"><i class="fa fa-lock me-2"></i>Account Security</h5>
                                 </div>
                                 <div class="col-12">
-                                    <input type="password" class="form-control border-0" placeholder="Password (min 6 characters)" name="Password" required minlength="6" style="height: 55px;">
+                                    <div class="input-group">
+                                        <input type="password" class="form-control border-0"
+                                               placeholder="Password (min 6 characters)" name="Password"
+                                               id="RegisterPassword" required minlength="6" style="height: 55px;">
+
+                                        <span class="input-group-text bg-white" style="cursor: pointer;" id="toggleRegisterPassword">
+                                            <i class="fa fa-eye" id="toggleRegisterPasswordIcon"></i>
+                                        </span>
+                                    </div>
                                 </div>
+
                                 <div class="col-12">
-                                    <input type="password" class="form-control border-0" placeholder="Confirm Password" name="ConfirmPassword" required style="height: 55px;">
+                                    <div class="input-group">
+                                        <input type="password" class="form-control border-0"
+                                               placeholder="Confirm Password" name="ConfirmPassword"
+                                               id="RegisterConfirmPassword" required style="height: 55px;">
+
+                                        <span class="input-group-text bg-white" style="cursor: pointer;" id="toggleRegisterConfirmPassword">
+                                            <i class="fa fa-eye" id="toggleRegisterConfirmPasswordIcon"></i>
+                                        </span>
+                                    </div>
                                 </div>
+
 
                                 <!-- Terms and Submit -->
                                 <div class="col-12 text-start mt-3">
@@ -178,6 +196,10 @@
                                         </label>
                                     </div>
                                 </div>
+                                <div class="col-12 mt-3">
+                                    <div class="g-recaptcha" data-sitekey="6LfvKAssAAAAAEUPDqw4kWD_8AQ3uJLxBlnDwp4Z"></div>
+                                </div>
+
                                 <div class="col-12">
                                     <button class="btn btn-secondary w-100 py-3" type="submit">
                                         <i class="fa fa-user-plus me-2"></i>Create Account
@@ -209,6 +231,34 @@
     <script src="~/lib/tempusdominus/js/moment.min.js"></script>
     <script src="~/lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="~/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    <script>
+        // Main Password Toggle
+        const regPassword = document.getElementById("RegisterPassword");
+        const toggleRegPassword = document.getElementById("toggleRegisterPassword");
+        const toggleRegPasswordIcon = document.getElementById("toggleRegisterPasswordIcon");
+
+        toggleRegPassword.addEventListener("click", () => {
+            const type = regPassword.getAttribute("type") === "password" ? "text" : "password";
+            regPassword.setAttribute("type", type);
+            toggleRegPasswordIcon.classList.toggle("fa-eye");
+            toggleRegPasswordIcon.classList.toggle("fa-eye-slash");
+        });
+
+        // Confirm Password Toggle
+        const regConfirmPassword = document.getElementById("RegisterConfirmPassword");
+        const toggleRegConfirmPassword = document.getElementById("toggleRegisterConfirmPassword");
+        const toggleRegConfirmPasswordIcon = document.getElementById("toggleRegisterConfirmPasswordIcon");
+
+        toggleRegConfirmPassword.addEventListener("click", () => {
+            const type = regConfirmPassword.getAttribute("type") === "password" ? "text" : "password";
+            regConfirmPassword.setAttribute("type", type);
+            toggleRegConfirmPasswordIcon.classList.toggle("fa-eye");
+            toggleRegConfirmPasswordIcon.classList.toggle("fa-eye-slash");
+        });
+    </script>
+
 
     <!-- Template Javascript -->
     <script src="~/js/main.js"></script>

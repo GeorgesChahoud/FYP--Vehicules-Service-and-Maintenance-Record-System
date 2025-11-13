@@ -110,7 +110,14 @@
                                     <input type="email" class="form-control border-0" placeholder="Admin Email Address" name="Email" required style="height: 55px;">
                                 </div>
                                 <div class="col-12">
-                                    <input type="password" class="form-control border-0" placeholder="Admin Password" name="Password" required style="height: 55px;">
+                                    <div class="input-group">
+                                        <input type="password" class="form-control border-0" placeholder="Admin Password"
+                                               name="Password" id="AdminPassword" required style="height: 55px;">
+
+                                        <span class="input-group-text bg-white" style="cursor: pointer;" id="toggleAdminPassword">
+                                            <i class="fa fa-eye" id="toggleAdminPasswordIcon"></i>
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="col-12 text-start">
                                     <div class="form-check">
@@ -146,6 +153,21 @@
     <script src="~/lib/waypoints/waypoints.min.js"></script>
     <script src="~/lib/counterup/counterup.min.js"></script>
     <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script>
+        const passwordInput = document.getElementById("AdminPassword");
+        const togglePassword = document.getElementById("toggleAdminPassword");
+        const toggleIcon = document.getElementById("toggleAdminPasswordIcon");
+
+        togglePassword.addEventListener("click", () => {
+            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+            passwordInput.setAttribute("type", type);
+
+            // Toggle icon
+            toggleIcon.classList.toggle("fa-eye");
+            toggleIcon.classList.toggle("fa-eye-slash");
+        });
+    </script>
+
 
     <!-- Template Javascript -->
     <script src="~/js/main.js"></script>
