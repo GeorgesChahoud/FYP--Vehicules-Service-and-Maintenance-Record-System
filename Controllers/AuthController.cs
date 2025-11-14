@@ -61,12 +61,12 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
-                var encryptedEmail = _encryptionService.Encrypt(Email);
+                
 
                 var user = await _context.Users
                     .Include(u => u.Role)
                     .Include(u => u.Customer)
-                    .FirstOrDefaultAsync(u => u.Email == encryptedEmail && u.RoleID == 3);
+                    .FirstOrDefaultAsync(u => u.Email == Email && u.RoleID == 3);
 
                 if (user == null)
                 {
@@ -112,10 +112,9 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
-                var encryptedEmail = _encryptionService.Encrypt(Email);
 
                 var user = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Email == encryptedEmail && u.RoleID == 3);
+                    .FirstOrDefaultAsync(u => u.Email == Email && u.RoleID == 3);
 
                 if (user == null)
                 {
@@ -129,7 +128,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 // Save reset code to database
                 var passwordReset = new PasswordReset
                 {
-                    Email = encryptedEmail,
+                    Email = Email,
                     ResetCode = resetCode,
                     CreatedAt = DateTime.UtcNow,
                     ExpiresAt = DateTime.UtcNow.AddMinutes(15),
@@ -209,10 +208,10 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
-                var encryptedEmail = _encryptionService.Encrypt(Email);
+                
 
                 var resetRecord = await _context.PasswordResets
-                    .Where(r => r.Email == encryptedEmail && r.ResetCode == ResetCode && !r.IsUsed)
+                    .Where(r => r.Email == Email && r.ResetCode == ResetCode && !r.IsUsed)
                     .OrderByDescending(r => r.CreatedAt)
                     .FirstOrDefaultAsync();
 
@@ -234,7 +233,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 await _context.SaveChangesAsync();
 
                 var user = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Email == encryptedEmail && u.RoleID == 3);
+                    .FirstOrDefaultAsync(u => u.Email == Email && u.RoleID == 3);
 
                 if (user == null)
                 {
@@ -320,11 +319,11 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
-                var encryptedEmail = _encryptionService.Encrypt(Email);
+                
 
                 // Check if email already exists
                 var existingUser = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Email == encryptedEmail);
+                    .FirstOrDefaultAsync(u => u.Email == Email);
 
                 if (existingUser != null)
                 {
@@ -341,7 +340,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 // Save registration data temporarily
                 var registrationVerification = new RegistrationVerification
                 {
-                    Email = encryptedEmail,
+                    Email = Email,
                     OtpCode = otpCode,
                     FirstName = FirstName,
                     LastName = LastName,
@@ -408,11 +407,10 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
-                var encryptedEmail = _encryptionService.Encrypt(Email);
 
                 // Find the registration verification record
                 var verificationRecord = await _context.RegistrationVerifications
-                    .Where(r => r.Email == encryptedEmail && r.OtpCode == OtpCode && !r.IsVerified)
+                    .Where(r => r.Email == Email && r.OtpCode == OtpCode && !r.IsVerified)
                     .OrderByDescending(r => r.CreatedAt)
                     .FirstOrDefaultAsync();
 
@@ -441,7 +439,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                     RoleID = 3,
                     FirstName = verificationRecord.FirstName,
                     LastName = verificationRecord.LastName,
-                    Email = encryptedEmail,
+                    Email = Email,
                     Password = verificationRecord.HashedPassword,
                     PhoneNumber = verificationRecord.PhoneNumber
                 };
@@ -483,11 +481,11 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
-                var encryptedEmail = _encryptionService.Encrypt(Email);
+                
 
                 // Find the latest registration verification
                 var verificationRecord = await _context.RegistrationVerifications
-                    .Where(r => r.Email == encryptedEmail && !r.IsVerified)
+                    .Where(r => r.Email == Email && !r.IsVerified)
                     .OrderByDescending(r => r.CreatedAt)
                     .FirstOrDefaultAsync();
 
@@ -555,12 +553,12 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
-                var encryptedEmail = _encryptionService.Encrypt(Email);
+                
 
                 var user = await _context.Users
                     .Include(u => u.Role)
                     .Include(u => u.Employee)
-                    .FirstOrDefaultAsync(u => u.Email == encryptedEmail && u.RoleID == 2);
+                    .FirstOrDefaultAsync(u => u.Email == Email && u.RoleID == 2);
 
                 if (user == null)
                 {
@@ -606,12 +604,12 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
-                var encryptedEmail = _encryptionService.Encrypt(Email);
+                
 
                 var user = await _context.Users
                     .Include(u => u.Role)
                     .Include(u => u.Admin)
-                    .FirstOrDefaultAsync(u => u.Email == encryptedEmail && u.RoleID == 1);
+                    .FirstOrDefaultAsync(u => u.Email == Email && u.RoleID == 1);
 
                 if (user == null)
                 {
@@ -653,7 +651,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()),
-                new Claim(ClaimTypes.Email, _encryptionService.Decrypt(user.Email)),
+                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(ClaimTypes.GivenName, user.FirstName),
                 new Claim(ClaimTypes.Surname, user.LastName),
@@ -688,10 +686,10 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
-                var encryptedEmail = _encryptionService.Encrypt(Email);
+                
 
                 var user = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Email == encryptedEmail && u.RoleID == 3);
+                    .FirstOrDefaultAsync(u => u.Email == Email && u.RoleID == 3);
 
                 if (user == null)
                 {
@@ -706,7 +704,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 // Create new password reset record
                 var passwordReset = new PasswordReset
                 {
-                    Email = encryptedEmail,
+                    Email = Email,
                     ResetCode = newResetCode,
                     CreatedAt = DateTime.UtcNow,
                     ExpiresAt = DateTime.UtcNow.AddMinutes(15),
