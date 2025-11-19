@@ -37,12 +37,13 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Data
                 new Role { ID = 3, Name = "Customer"}
             );
 
+            // Seed users with precomputed BCrypt hashed passwords (stable for migrations)
             modelBuilder.Entity<User>().HasData(
-               new User { ID = 1, RoleID = 1, FirstName = "Georges", LastName = "Chahoud", Email = "georgeschahoud@carhub-garage.com", Password = "$2b$12$TqAIGuLhqvCALgZa5A6h5OVurELuLH6a1SA1VUfIOuYZV/xZTtd.W", PhoneNumber = "+96103021684" },
-               new User { ID = 2, RoleID = 1, FirstName = "Christopher", LastName = "Hanna Nehme", Email = "christopherhannanehme@carhub-garage.com", Password = "CHN@Car#3", PhoneNumber = "+96181651808" },
-               new User { ID = 3, RoleID = 1, FirstName = "Elias", LastName = "Azar", Email = "eliasazar@carhub-garage.com", Password = "EAZ@Car#5", PhoneNumber = "+96171750758" },
-               new User { ID = 4, RoleID = 1, FirstName = "Anthony", LastName = "Chahine", Email = "anthonychahine@carhub-garage.com", Password = "ACH@Car#7", PhoneNumber = "+96181866298" }
-           );
+                new User { ID = 1, RoleID = 1, FirstName = "Georges", LastName = "Chahoud", Email = "georgeschahoud@carhub-garage.com", Password = "$2a$11$VR6vwW/QVwDI8GGet8J4M.00B4rDjAHYBuBl4SC3xIsn5ZQ72KXU.", PhoneNumber = "+96103021684" },
+                new User { ID = 2, RoleID = 1, FirstName = "Christopher", LastName = "Hanna Nehme", Email = "christopherhannanehme@carhub-garage.com", Password = "$2a$11$YLoFs2ydeRPaR5Vjg5twNeiHOVusJypXzv5YrFrSASL9cBkggEyfO", PhoneNumber = "+96181651808" },
+                new User { ID = 3, RoleID = 1, FirstName = "Elias", LastName = "Azar", Email = "eliasazar@carhub-garage.com", Password = "$2a$11$Y7B.ir.5SY3eJ46hJkU0JufQtZTdFo13TK5C1i6FVHgQAD6wz68Fu", PhoneNumber = "+96171750758" },
+                new User { ID = 4, RoleID = 1, FirstName = "Anthony", LastName = "Chahine", Email = "anthonychahine@carhub-garage.com", Password = "$2a$11$n1K1/r8vUJ2pKXA9SmT2qegZbSKm5KQyy1WvAlnK9umNeK3W/4DXC", PhoneNumber = "+96181866298" }
+            );
 
             modelBuilder.Entity<Admin>().HasData(
                 new Admin { ID = 1, UserID = 1 },

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251020174721_NewModels")]
-    partial class NewModels
+    [Migration("20251119061404_allOnNewDB")]
+    partial class allOnNewDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,6 +42,28 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                         .IsUnique();
 
                     b.ToTable("Admin");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            UserID = 1
+                        },
+                        new
+                        {
+                            ID = 2,
+                            UserID = 2
+                        },
+                        new
+                        {
+                            ID = 3,
+                            UserID = 3
+                        },
+                        new
+                        {
+                            ID = 4,
+                            UserID = 4
+                        });
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Appointment", b =>
@@ -452,7 +474,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                             Email = "georgeschahoud@carhub-garage.com",
                             FirstName = "Georges",
                             LastName = "Chahoud",
-                            Password = "GCH@Car#9",
+                            Password = "Georges@admin0",
                             PhoneNumber = "+96103021684",
                             RoleID = 1
                         },
@@ -462,7 +484,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                             Email = "christopherhannanehme@carhub-garage.com",
                             FirstName = "Christopher",
                             LastName = "Hanna Nehme",
-                            Password = "CHN@Car#3",
+                            Password = "Chris@admin0",
                             PhoneNumber = "+96181651808",
                             RoleID = 1
                         },
@@ -472,7 +494,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                             Email = "eliasazar@carhub-garage.com",
                             FirstName = "Elias",
                             LastName = "Azar",
-                            Password = "EAZ@Car#5",
+                            Password = "Elias@admin0",
                             PhoneNumber = "+96171750758",
                             RoleID = 1
                         },
@@ -482,7 +504,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                             Email = "anthonychahine@carhub-garage.com",
                             FirstName = "Anthony",
                             LastName = "Chahine",
-                            Password = "ACH@Car#7",
+                            Password = "Anthony@admin0",
                             PhoneNumber = "+96181866298",
                             RoleID = 1
                         });

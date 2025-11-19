@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251018090859_AllMigrations")]
-    partial class AllMigrations
+    [Migration("20251119065735_AdminPassEnc")]
+    partial class AdminPassEnc
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,6 +42,28 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                         .IsUnique();
 
                     b.ToTable("Admin");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            UserID = 1
+                        },
+                        new
+                        {
+                            ID = 2,
+                            UserID = 2
+                        },
+                        new
+                        {
+                            ID = 3,
+                            UserID = 3
+                        },
+                        new
+                        {
+                            ID = 4,
+                            UserID = 4
+                        });
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Appointment", b =>
@@ -208,6 +230,36 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.ToTable("PartServices");
                 });
 
+            modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.PasswordReset", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ResetCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("PasswordResets");
+                });
+
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Receipt", b =>
                 {
                     b.Property<int>("ID")
@@ -254,6 +306,56 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.HasIndex("ServiceID");
 
                     b.ToTable("ReceiptServices");
+                });
+
+            modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.RegistrationVerification", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HashedPassword")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OtpCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("RegistrationVerifications");
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Role", b =>
@@ -364,6 +466,48 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.HasIndex("RoleID");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Email = "georgeschahoud@carhub-garage.com",
+                            FirstName = "Georges",
+                            LastName = "Chahoud",
+                            Password = "$2a$11$VR6vwW/QVwDI8GGet8J4M.00B4rDjAHYBuBl4SC3xIsn5ZQ72KXU.",
+                            PhoneNumber = "+96103021684",
+                            RoleID = 1
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Email = "christopherhannanehme@carhub-garage.com",
+                            FirstName = "Christopher",
+                            LastName = "Hanna Nehme",
+                            Password = "$2a$11$YLoFs2ydeRPaR5Vjg5twNeiHOVusJypXzv5YrFrSASL9cBkggEyfO",
+                            PhoneNumber = "+96181651808",
+                            RoleID = 1
+                        },
+                        new
+                        {
+                            ID = 3,
+                            Email = "eliasazar@carhub-garage.com",
+                            FirstName = "Elias",
+                            LastName = "Azar",
+                            Password = "$2a$11$Y7B.ir.5SY3eJ46hJkU0JufQtZTdFo13TK5C1i6FVHgQAD6wz68Fu",
+                            PhoneNumber = "+96171750758",
+                            RoleID = 1
+                        },
+                        new
+                        {
+                            ID = 4,
+                            Email = "anthonychahine@carhub-garage.com",
+                            FirstName = "Anthony",
+                            LastName = "Chahine",
+                            Password = "$2a$11$n1K1/r8vUJ2pKXA9SmT2qegZbSKm5KQyy1WvAlnK9umNeK3W/4DXC",
+                            PhoneNumber = "+96181866298",
+                            RoleID = 1
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
