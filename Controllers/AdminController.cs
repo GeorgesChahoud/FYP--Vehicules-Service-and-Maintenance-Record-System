@@ -30,11 +30,13 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
             var customerCount = await _context.Customers.CountAsync();
             var serviceCount = await _context.Services.CountAsync();
             var partCount = await _context.Parts.CountAsync();
+            var appointmentCount = await _context.Appointments.CountAsync();
 
             ViewBag.EmployeeCount = employeeCount;
             ViewBag.CustomerCount = customerCount;
             ViewBag.ServiceCount = serviceCount;
             ViewBag.PartCount = partCount;
+            ViewBag.AppointmentCount = appointmentCount;
 
             return View();
         }
@@ -738,6 +740,107 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
             {
                 TempData["ErrorMessage"] = "An error occurred while deleting the customer.";
                 return RedirectToAction("Customers");
+            }
+        }
+
+        #endregion
+
+        #region APPOINTMENT MANAGEMENT
+
+        // LIST ALL APPOINTMENTS
+        public async Task<IActionResult> Appointments()
+        {
+            try
+            {
+                var appointments = await _context.Appointments
+                    .Include(a => a.Car)
+                        .ThenInclude(c => c.User)
+                    .Include(a => a.Status)
+                    .Include(a => a.Service)
+                    .OrderByDescending(a => a.ScheduleAppointment)
+                    .ToListAsync();
+
+                // Decrypt customer emails for display
+                if (appointments != null && appointments.Any())
+                {
+                    foreach (var appointment in appointments)
+                    {
+                        if (appointment.Car?.User != null && !string.IsNullOrEmpty(appointment.Car.User.Email))
+                        {
+                            try
+                            {
+                                appointment.Car.User.Email = _encryptionService.Decrypt(appointment.Car.User.Email);
+                            }
+                            catch (Exception)
+                            {
+                                appointment.Car.User.Email = "Error decrypting email";
+                            }
+                        }
+                    }
+                }
+
+                return View(appointments ?? new List<Appointment>());
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error loading appointments: {ex.Message}";
+                return View(new List<Appointment>());
+            }
+        }
+
+        // UPDATE APPOINTMENT STATUS
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateAppointmentStatus(int id, int statusId)
+        {
+            try
+            {
+                var appointment = await _context.Appointments.FindAsync(id);
+                
+                if (appointment == null)
+                {
+                    TempData["ErrorMessage"] = "Appointment not found.";
+                    return RedirectToAction("Appointments");
+                }
+
+                appointment.StatusID = statusId;
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Appointment status updated successfully!";
+                return RedirectToAction("Appointments");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the appointment status.";
+                return RedirectToAction("Appointments");
+            }
+        }
+
+        // DELETE APPOINTMENT
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAppointment(int id)
+        {
+            try
+            {
+                var appointment = await _context.Appointments.FindAsync(id);
+
+                if (appointment == null)
+                {
+                    TempData["ErrorMessage"] = "Appointment not found.";
+                    return RedirectToAction("Appointments");
+                }
+
+                _context.Appointments.Remove(appointment);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Appointment deleted successfully!";
+                return RedirectToAction("Appointments");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while deleting the appointment.";
+                return RedirectToAction("Appointments");
             }
         }
 

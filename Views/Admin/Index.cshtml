@@ -84,6 +84,24 @@
                 </div>
             </div>
         </div>
+
+        <!-- Second Row for Appointments -->
+        <div class="row g-4 mt-3">
+            <!-- Appointments Card -->
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.9s">
+                <div class="service-item bg-light rounded h-100 p-5 text-center">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 80px; height: 80px;">
+                        <i class="fa fa-calendar-check fa-2x text-primary"></i>
+                    </div>
+                    <h4 class="mb-3">Appointments</h4>
+                    <h2 class="display-4 text-primary mb-3">@ViewBag.AppointmentCount</h2>
+                    <p class="mb-4">View and manage customer appointments</p>
+                    <a class="btn btn-primary py-3 px-5" href="@Url.Action("Appointments", "Admin")">
+                        View<i class="fa fa-arrow-right ms-3"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <!-- Dashboard Stats End -->

@@ -55,6 +55,7 @@
                 <a href="@Url.Action("Services", "Admin")" class="nav-item nav-link @(ViewData["ActivePage"]?.ToString() == "Services" ? "active" : "")">Services</a>
                 <a href="@Url.Action("Parts", "Admin")" class="nav-item nav-link @(ViewData["ActivePage"]?.ToString() == "Parts" ? "active" : "")">Parts</a>
                 <a href="@Url.Action("Customers", "Admin")" class="nav-item nav-link @(ViewData["ActivePage"]?.ToString() == "Customers" ? "active" : "")">Customers</a>
+                <a href="@Url.Action("Appointments", "Admin")" class="nav-item nav-link @(ViewData["ActivePage"]?.ToString() == "Appointments" ? "active" : "")">Appointments</a>
             </div>
             <form method="post" asp-action="Logout" asp-controller="Auth" class="d-none d-lg-block">
                 @Html.AntiForgeryToken()
@@ -103,6 +104,7 @@
                     <a class="btn btn-link" href="@Url.Action("Services", "Admin")">Manage Services</a>
                     <a class="btn btn-link" href="@Url.Action("Parts", "Admin")">Manage Parts</a>
                     <a class="btn btn-link" href="@Url.Action("Customers", "Admin")">View Customers</a>
+                    <a class="btn btn-link" href="@Url.Action("Appointments", "Admin")">View Appointments</a>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <h4 class="text-light mb-4">Contact</h4>
