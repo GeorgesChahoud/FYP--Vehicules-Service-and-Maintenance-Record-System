@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251119061404_allOnNewDB")]
-    partial class allOnNewDB
+    [Migration("20251119075713_AllOnNewDB")]
+    partial class AllOnNewDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -474,7 +474,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                             Email = "georgeschahoud@carhub-garage.com",
                             FirstName = "Georges",
                             LastName = "Chahoud",
-                            Password = "Georges@admin0",
+                            Password = "$2a$11$VR6vwW/QVwDI8GGet8J4M.00B4rDjAHYBuBl4SC3xIsn5ZQ72KXU.",
                             PhoneNumber = "+96103021684",
                             RoleID = 1
                         },
@@ -484,7 +484,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                             Email = "christopherhannanehme@carhub-garage.com",
                             FirstName = "Christopher",
                             LastName = "Hanna Nehme",
-                            Password = "Chris@admin0",
+                            Password = "$2a$11$YLoFs2ydeRPaR5Vjg5twNeiHOVusJypXzv5YrFrSASL9cBkggEyfO",
                             PhoneNumber = "+96181651808",
                             RoleID = 1
                         },
@@ -494,7 +494,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                             Email = "eliasazar@carhub-garage.com",
                             FirstName = "Elias",
                             LastName = "Azar",
-                            Password = "Elias@admin0",
+                            Password = "$2a$11$Y7B.ir.5SY3eJ46hJkU0JufQtZTdFo13TK5C1i6FVHgQAD6wz68Fu",
                             PhoneNumber = "+96171750758",
                             RoleID = 1
                         },
@@ -504,7 +504,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                             Email = "anthonychahine@carhub-garage.com",
                             FirstName = "Anthony",
                             LastName = "Chahine",
-                            Password = "Anthony@admin0",
+                            Password = "$2a$11$n1K1/r8vUJ2pKXA9SmT2qegZbSKm5KQyy1WvAlnK9umNeK3W/4DXC",
                             PhoneNumber = "+96181866298",
                             RoleID = 1
                         });
