@@ -473,6 +473,18 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Status",
+                columns: new[] { "ID", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Pending" },
+                    { 2, "Confirmed" },
+                    { 3, "In Progress" },
+                    { 4, "Completed" },
+                    { 5, "Cancelled" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "ID", "Email", "FirstName", "LastName", "Password", "PhoneNumber", "RoleID" },
                 values: new object[,]

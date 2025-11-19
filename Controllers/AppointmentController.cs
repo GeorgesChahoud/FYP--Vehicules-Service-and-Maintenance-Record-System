@@ -75,6 +75,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 {
                     CarID = CarID,
                     StatusID = 1, // Pending status
+                    ServiceID = ServiceID,
                     ScheduleAppointment = ScheduleAppointment
                 };
 

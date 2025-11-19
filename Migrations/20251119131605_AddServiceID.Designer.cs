@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251119075713_AllOnNewDB")]
-    partial class AllOnNewDB
+    [Migration("20251119131605_AddServiceID")]
+    partial class AddServiceID
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -80,12 +80,17 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.Property<DateTime>("ScheduleAppointment")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("ServiceID")
+                        .HasColumnType("int");
+
                     b.Property<int>("StatusID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
 
                     b.HasIndex("CarID");
+
+                    b.HasIndex("ServiceID");
 
                     b.HasIndex("StatusID");
 
@@ -428,6 +433,33 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Status");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Name = "Pending"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Name = "Confirmed"
+                        },
+                        new
+                        {
+                            ID = 3,
+                            Name = "In Progress"
+                        },
+                        new
+                        {
+                            ID = 4,
+                            Name = "Completed"
+                        },
+                        new
+                        {
+                            ID = 5,
+                            Name = "Cancelled"
+                        });
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.User", b =>
@@ -727,6 +759,10 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Service", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceID");
+
                     b.HasOne("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Status", "Status")
                         .WithMany("Appointments")
                         .HasForeignKey("StatusID")
@@ -734,6 +770,8 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                         .IsRequired();
 
                     b.Navigation("Car");
+
+                    b.Navigation("Service");
 
                     b.Navigation("Status");
                 });

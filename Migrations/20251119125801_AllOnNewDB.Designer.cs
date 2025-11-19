@@ -4,6 +4,7 @@ using FYP___Vehicules_Service_and_Maintenance_Record_System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251119125801_AllOnNewDB")]
+    partial class AllOnNewDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,17 +80,12 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.Property<DateTime>("ScheduleAppointment")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ServiceID")
-                        .HasColumnType("int");
-
                     b.Property<int>("StatusID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
 
                     b.HasIndex("CarID");
-
-                    b.HasIndex("ServiceID");
 
                     b.HasIndex("StatusID");
 
@@ -756,10 +754,6 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Service", "Service")
-                        .WithMany()
-                        .HasForeignKey("ServiceID");
-
                     b.HasOne("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Status", "Status")
                         .WithMany("Appointments")
                         .HasForeignKey("StatusID")
@@ -767,8 +761,6 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                         .IsRequired();
 
                     b.Navigation("Car");
-
-                    b.Navigation("Service");
 
                     b.Navigation("Status");
                 });

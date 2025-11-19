@@ -52,6 +52,15 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Data
                 new Admin { ID = 4, UserID = 4 }
             );
 
+            modelBuilder.Entity<Status>().HasData(
+               new Status { ID = 1, Name = "Pending" },
+               new Status { ID = 2, Name = "Confirmed" },
+               new Status { ID = 3, Name = "In Progress" },
+               new Status { ID = 4, Name = "Completed" },
+               new Status { ID = 5, Name = "Cancelled" }
+           );
+
+
             //// ---------------- Admin <-> User ----------------
             //modelBuilder.Entity<Admin>()
             //    .HasOne(c => c.User)
