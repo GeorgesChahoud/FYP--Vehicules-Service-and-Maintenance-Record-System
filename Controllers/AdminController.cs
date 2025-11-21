@@ -815,6 +815,14 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                     return RedirectToAction("Appointments");
                 }
 
+                // Check if appointment is already cancelled - prevent any status changes
+                if (appointment.Status?.Name == "Cancelled")
+                {
+                    _logger.LogWarning($"Attempted to modify cancelled appointment {id}");
+                    TempData["ErrorMessage"] = "⚠️ Cannot modify a cancelled appointment. Cancelled appointments are locked and cannot be updated.";
+                    return RedirectToAction("Appointments");
+                }
+
                 // Get the old status name for logging
                 var oldStatusName = appointment.Status?.Name ?? "Unknown";
 

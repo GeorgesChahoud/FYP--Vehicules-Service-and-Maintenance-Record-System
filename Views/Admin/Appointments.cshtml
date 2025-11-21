@@ -100,64 +100,77 @@
                                         </span>
                                     </td>
                                     <td class="text-center">
-                                        <!-- Status Update Dropdown -->
-                                        <div class="btn-group me-2">
-                                            <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-bs-toggle="dropdown">
-                                                <i class="fa fa-edit"></i> Status
+                                        @if (appointment.Status?.Name == "Cancelled")
+                                        {
+                                            <!-- Cancelled appointments cannot be modified -->
+                                            <span class="badge bg-secondary">
+                                                <i class="fa fa-lock me-1"></i>Locked
+                                            </span>
+                                            <button type="button" class="btn btn-sm btn-secondary" disabled title="Cannot modify cancelled appointments">
+                                                <i class="fa fa-ban"></i> Status
                                             </button>
-                                            <ul class="dropdown-menu">
-                                                <li>
-                                                    <form method="post" asp-action="UpdateAppointmentStatus" asp-controller="Admin" style="display:inline;">
-                                                        @Html.AntiForgeryToken()
-                                                        <input type="hidden" name="id" value="@appointment.ID" />
-                                                        <input type="hidden" name="statusId" value="1" />
-                                                        <button type="submit" class="dropdown-item">
-                                                            <i class="fa fa-clock text-warning"></i> Pending
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                                <li>
-                                                    <form method="post" asp-action="UpdateAppointmentStatus" asp-controller="Admin" style="display:inline;">
-                                                        @Html.AntiForgeryToken()
-                                                        <input type="hidden" name="id" value="@appointment.ID" />
-                                                        <input type="hidden" name="statusId" value="2" />
-                                                        <button type="submit" class="dropdown-item">
-                                                            <i class="fa fa-check-circle text-info"></i> Confirmed
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                                <li>
-                                                    <form method="post" asp-action="UpdateAppointmentStatus" asp-controller="Admin" style="display:inline;">
-                                                        @Html.AntiForgeryToken()
-                                                        <input type="hidden" name="id" value="@appointment.ID" />
-                                                        <input type="hidden" name="statusId" value="3" />
-                                                        <button type="submit" class="dropdown-item">
-                                                            <i class="fa fa-spinner text-primary"></i> In Progress
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                                <li>
-                                                    <form method="post" asp-action="UpdateAppointmentStatus" asp-controller="Admin" style="display:inline;">
-                                                        @Html.AntiForgeryToken()
-                                                        <input type="hidden" name="id" value="@appointment.ID" />
-                                                        <input type="hidden" name="statusId" value="4" />
-                                                        <button type="submit" class="dropdown-item">
-                                                            <i class="fa fa-check text-success"></i> Completed
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                                <li>
-                                                    <form method="post" asp-action="UpdateAppointmentStatus" asp-controller="Admin" style="display:inline;">
-                                                        @Html.AntiForgeryToken()
-                                                        <input type="hidden" name="id" value="@appointment.ID" />
-                                                        <input type="hidden" name="statusId" value="5" />
-                                                        <button type="submit" class="dropdown-item">
-                                                            <i class="fa fa-times text-danger"></i> Cancelled
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        }
+                                        else
+                                        {
+                                            <!-- Status Update Dropdown -->
+                                            <div class="btn-group me-2">
+                                                <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-bs-toggle="dropdown">
+                                                    <i class="fa fa-edit"></i> Status
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <form method="post" asp-action="UpdateAppointmentStatus" asp-controller="Admin" style="display:inline;">
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" name="id" value="@appointment.ID" />
+                                                            <input type="hidden" name="statusId" value="1" />
+                                                            <button type="submit" class="dropdown-item">
+                                                                <i class="fa fa-clock text-warning"></i> Pending
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form method="post" asp-action="UpdateAppointmentStatus" asp-controller="Admin" style="display:inline;">
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" name="id" value="@appointment.ID" />
+                                                            <input type="hidden" name="statusId" value="2" />
+                                                            <button type="submit" class="dropdown-item">
+                                                                <i class="fa fa-check-circle text-info"></i> Confirmed
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form method="post" asp-action="UpdateAppointmentStatus" asp-controller="Admin" style="display:inline;">
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" name="id" value="@appointment.ID" />
+                                                            <input type="hidden" name="statusId" value="3" />
+                                                            <button type="submit" class="dropdown-item">
+                                                                <i class="fa fa-spinner text-primary"></i> In Progress
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form method="post" asp-action="UpdateAppointmentStatus" asp-controller="Admin" style="display:inline;">
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" name="id" value="@appointment.ID" />
+                                                            <input type="hidden" name="statusId" value="4" />
+                                                            <button type="submit" class="dropdown-item">
+                                                                <i class="fa fa-check text-success"></i> Completed
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form method="post" asp-action="UpdateAppointmentStatus" asp-controller="Admin" style="display:inline;">
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" name="id" value="@appointment.ID" />
+                                                            <input type="hidden" name="statusId" value="5" />
+                                                            <button type="submit" class="dropdown-item">
+                                                                <i class="fa fa-times text-danger"></i> Cancelled
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        }
 
                                         <!-- Delete Button -->
                                         <form method="post" asp-action="DeleteAppointment" asp-controller="Admin" asp-route-id="@appointment.ID" style="display:inline;">
@@ -187,28 +200,41 @@
         {
             <!-- Appointment Statistics -->
             <div class="row g-4 mt-4">
-                <div class="col-md-3 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="col-md-2 wow fadeInUp" data-wow-delay="0.1s">
                     <div class="bg-warning text-dark rounded p-4 text-center">
                         <h3 class="mb-2">@Model.Count(a => a.Status?.Name == "Pending")</h3>
                         <p class="mb-0"><i class="fa fa-clock me-2"></i>Pending</p>
                     </div>
                 </div>
-                <div class="col-md-3 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="col-md-2 wow fadeInUp" data-wow-delay="0.2s">
                     <div class="bg-info text-white rounded p-4 text-center">
                         <h3 class="text-white mb-2">@Model.Count(a => a.Status?.Name == "Confirmed")</h3>
                         <p class="mb-0"><i class="fa fa-check-circle me-2"></i>Confirmed</p>
                     </div>
                 </div>
-                <div class="col-md-3 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="col-md-2 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="bg-primary text-white rounded p-4 text-center">
                         <h3 class="text-white mb-2">@Model.Count(a => a.Status?.Name == "In Progress")</h3>
                         <p class="mb-0"><i class="fa fa-spinner me-2"></i>In Progress</p>
                     </div>
                 </div>
-                <div class="col-md-3 wow fadeInUp" data-wow-delay="0.7s">
+                <div class="col-md-2 wow fadeInUp" data-wow-delay="0.4s">
                     <div class="bg-success text-white rounded p-4 text-center">
                         <h3 class="text-white mb-2">@Model.Count(a => a.Status?.Name == "Completed")</h3>
                         <p class="mb-0"><i class="fa fa-check me-2"></i>Completed</p>
+                    </div>
+                </div>
+                <div class="col-md-2 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="bg-danger text-white rounded p-4 text-center">
+                        <h3 class="text-white mb-2">@Model.Count(a => a.Status?.Name == "Cancelled")</h3>
+                        <p class="mb-0"><i class="fa fa-times me-2"></i>Cancelled</p>
+                    </div>
+                </div>
+                <div class="col-md-2 wow fadeInUp" data-wow-delay="0.6s">
+                    <div class="bg-dark text-white rounded p-4 text-center">
+                        <h3 class="text-white mb-2">@Model.Count(a => a.Status?.Name == "Cancelled")</h3>
+                        <p class="mb-0"><i class="fa fa-lock me-2"></i>Locked</p>
+                        <small class="text-muted">Cannot modify</small>
                     </div>
                 </div>
             </div>
