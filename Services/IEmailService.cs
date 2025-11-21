@@ -11,5 +11,12 @@
             DateTime appointmentDateTime, 
             string carDetails,
             string specialRequest = null);
+        Task SendAppointmentStatusUpdateEmailAsync(
+            string recipientEmail,
+            string recipientName,
+            string statusName,
+            string serviceName,
+            DateTime appointmentDateTime,
+            string carDetails);
     }
 }

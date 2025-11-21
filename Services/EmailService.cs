@@ -217,7 +217,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Services
                             .header h1 {{ margin: 0; font-size: 28px; }}
                             .content {{ padding: 40px 30px; }}
                             .content p {{ color: #333; line-height: 1.6; font-size: 16px; }}
-                            .appointment-box {{ background-color: #f8f9fa; border-left: 4px solid #FF0000; padding: 20px; margin: 30px 0; }}
+                            .appointment-box {{ background-color: #f8f9fa; border-left: 4px solid #FF0000; padding: 20px; margin: 30px 0; text-align: center; }}
                             .appointment-box h3 {{ margin-top: 0; color: #FF0000; }}
                             .detail-row {{ display: flex; padding: 10px 0; border-bottom: 1px solid #e9ecef; }}
                             .detail-label {{ font-weight: bold; color: #6c757d; width: 150px; }}
@@ -297,6 +297,153 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Services
             {
                 _logger.LogError($"Failed to send appointment confirmation email: {ex.Message}");
                 throw new InvalidOperationException($"Failed to send appointment confirmation email: {ex.Message}", ex);
+            }
+        }
+
+        public async Task SendAppointmentStatusUpdateEmailAsync(
+            string recipientEmail,
+            string recipientName,
+            string statusName,
+            string serviceName,
+            DateTime appointmentDateTime,
+            string carDetails)
+        {
+            try
+            {
+                var emailSettings = _configuration.GetSection("EmailSettings");
+
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress(
+                    emailSettings["SenderName"],
+                    emailSettings["SenderEmail"]
+                ));
+                message.To.Add(new MailboxAddress(recipientName, recipientEmail));
+                message.Subject = $"CarHub - Appointment Status Update: {statusName}";
+
+                // Determine status color and icon based on status
+                string statusColor = statusName switch
+                {
+                    "Pending" => "#FFA500",
+                    "Confirmed" => "#007BFF",
+                    "In Progress" => "#17A2B8",
+                    "Completed" => "#28A745",
+                    "Cancelled" => "#DC3545",
+                    _ => "#6C757D"
+                };
+
+                string statusIcon = statusName switch
+                {
+                    "Pending" => "⏳",
+                    "Confirmed" => "✅",
+                    "In Progress" => "🔧",
+                    "Completed" => "✔️",
+                    "Cancelled" => "❌",
+                    _ => "ℹ️"
+                };
+
+                string statusMessage = statusName switch
+                {
+                    "Pending" => "Your appointment is waiting for confirmation from our team.",
+                    "Confirmed" => "Your appointment has been confirmed! We're looking forward to seeing you.",
+                    "In Progress" => "Our technicians are currently working on your vehicle.",
+                    "Completed" => "Great news! Your vehicle service has been completed and is ready for pickup.",
+                    "Cancelled" => "Your appointment has been cancelled. If you have any questions, please contact us.",
+                    _ => "Your appointment status has been updated."
+                };
+
+                var builder = new BodyBuilder();
+                
+                builder.HtmlBody = $@"
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <style>
+                            body {{ font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }}
+                            .container {{ max-width: 600px; margin: 30px auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }}
+                            .header {{ background-color: {statusColor}; color: white; padding: 30px; text-align: center; }}
+                            .header h1 {{ margin: 0; font-size: 28px; }}
+                            .content {{ padding: 40px 30px; }}
+                            .content p {{ color: #333; line-height: 1.6; font-size: 16px; }}
+                            .status-box {{ background-color: #f8f9fa; border-left: 4px solid {statusColor}; padding: 20px; margin: 30px 0; text-align: center; }}
+                            .status-box h2 {{ margin: 10px 0; color: {statusColor}; font-size: 32px; }}
+                            .status-message {{ background-color: #e7f3ff; border-left: 4px solid #007BFF; padding: 15px; margin: 20px 0; }}
+                            .status-message p {{ margin: 0; color: #004085; }}
+                            .appointment-details {{ background-color: #f8f9fa; padding: 20px; margin: 20px 0; border-radius: 5px; }}
+                            .detail-row {{ display: flex; padding: 10px 0; border-bottom: 1px solid #e9ecef; }}
+                            .detail-label {{ font-weight: bold; color: #6c757d; width: 150px; }}
+                            .detail-value {{ color: #333; }}
+                            .footer {{ background-color: #f8f9fa; padding: 20px; text-align: center; color: #6c757d; font-size: 12px; }}
+                            .contact-info {{ background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }}
+                            .contact-info p {{ margin: 5px 0; color: #856404; }}
+                        </style>
+                    </head>
+                    <body>
+                        <div class='container'>
+                            <div class='header'>
+                                <h1>{statusIcon} Status Update</h1>
+                            </div>
+                            <div class='content'>
+                                <p>Hello <strong>{recipientName}</strong>,</p>
+                                <p>We're writing to update you on your appointment at <strong>CarHub Garage</strong>.</p>
+                                
+                                <div class='status-box'>
+                                    <p style='margin: 0; color: #6c757d; font-size: 14px;'>Current Status</p>
+                                    <h2>{statusIcon} {statusName}</h2>
+                                </div>
+
+                                <div class='status-message'>
+                                    <p><strong>{statusMessage}</strong></p>
+                                </div>
+
+                                <div class='appointment-details'>
+                                    <h3 style='margin-top: 0; color: #333;'>📋 Appointment Details</h3>
+                                    <div class='detail-row'>
+                                        <span class='detail-label'>Service:</span>
+                                        <span class='detail-value'>{serviceName}</span>
+                                    </div>
+                                    <div class='detail-row'>
+                                        <span class='detail-label'>Scheduled Date:</span>
+                                        <span class='detail-value'>{appointmentDateTime.ToString("dddd, MMMM dd, yyyy 'at' hh:mm tt")}</span>
+                                    </div>
+                                    <div class='detail-row'>
+                                        <span class='detail-label'>Vehicle:</span>
+                                        <span class='detail-value'>{carDetails}</span>
+                                    </div>
+                                </div>
+
+                                <div class='contact-info'>
+                                    <p><strong>📞 Need to reach us?</strong></p>
+                                    <p>Phone: <strong>+961 03 866 298</strong></p>
+                                    <p>Location: <strong>CarHub Garage, 123 Street, Beirut, Lebanon</strong></p>
+                                </div>
+
+                                {(statusName == "Completed" ? @"
+                                <p style='background-color: #d4edda; padding: 15px; border-radius: 5px; color: #155724;'>
+                                    <strong>Ready for Pickup!</strong><br>
+                                    Your vehicle is ready to be picked up at your convenience during our business hours (Mon-Fri: 9AM-9PM).
+                                </p>" : "")}
+
+                                <p style='margin-top: 30px;'>Thank you for choosing CarHub Garage!<br><strong>The CarHub Team</strong></p>
+                            </div>
+                            <div class='footer'>
+                                <p>This is an automated update from CarHub Garage</p>
+                                <p>123 Street, Beirut, Lebanon | +961 03 866 298</p>
+                                <p>&copy; 2025 CarHub Garage. All rights reserved.</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                ";
+
+                message.Body = builder.ToMessageBody();
+
+                await SendEmailAsync(message);
+                _logger.LogInformation($"Appointment status update email sent to {recipientEmail} - Status: {statusName}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to send appointment status update email: {ex.Message}");
+                throw new InvalidOperationException($"Failed to send status update email: {ex.Message}", ex);
             }
         }
 

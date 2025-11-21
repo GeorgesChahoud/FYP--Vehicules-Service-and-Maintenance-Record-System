@@ -4,6 +4,7 @@ using FYP___Vehicules_Service_and_Maintenance_Record_System.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 {
@@ -12,15 +13,21 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IEncryptionService _encryptionService;
+        private readonly IEmailService _emailService;
+        private readonly ILogger<AdminController> _logger;
 
         public AdminController(
             ApplicationDbContext context,
             IPasswordHasher passwordHasher,
-            IEncryptionService encryptionService)
+            IEncryptionService encryptionService,
+            IEmailService emailService,
+            ILogger<AdminController> logger)
         {
             _context = context;
             _passwordHasher = passwordHasher;
             _encryptionService = encryptionService;
+            _emailService = emailService;
+            _logger = logger;
         }
 
         // DASHBOARD
@@ -795,7 +802,12 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
         {
             try
             {
-                var appointment = await _context.Appointments.FindAsync(id);
+                var appointment = await _context.Appointments
+                    .Include(a => a.Car)
+                        .ThenInclude(c => c.User)
+                    .Include(a => a.Status)
+                    .Include(a => a.Service)
+                    .FirstOrDefaultAsync(a => a.ID == id);
                 
                 if (appointment == null)
                 {
@@ -803,14 +815,62 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                     return RedirectToAction("Appointments");
                 }
 
+                // Get the old status name for logging
+                var oldStatusName = appointment.Status?.Name ?? "Unknown";
+
+                // Update the status
                 appointment.StatusID = statusId;
                 await _context.SaveChangesAsync();
 
-                TempData["SuccessMessage"] = "Appointment status updated successfully!";
+                // Reload to get the new status name
+                await _context.Entry(appointment).Reference(a => a.Status).LoadAsync();
+                var newStatusName = appointment.Status?.Name ?? "Unknown";
+
+                _logger.LogInformation($"Appointment {id} status updated from '{oldStatusName}' to '{newStatusName}'");
+
+                // Send email notification to customer
+                try
+                {
+                    if (appointment.Car?.User != null)
+                    {
+                        // Customer emails are stored as plain text
+                        string customerEmail = appointment.Car.User.Email;
+                        string customerName = $"{appointment.Car.User.FirstName} {appointment.Car.User.LastName}";
+                        string carDetails = $"{appointment.Car.Year} {appointment.Car.Make} {appointment.Car.Model} - Plate: {appointment.Car.PlateNumber}";
+                        string serviceName = appointment.Service?.ServiceName ?? "Service";
+
+                        _logger.LogInformation($"Sending status update email to {customerEmail}");
+
+                        await _emailService.SendAppointmentStatusUpdateEmailAsync(
+                            customerEmail,
+                            customerName,
+                            newStatusName,
+                            serviceName,
+                            appointment.ScheduleAppointment,
+                            carDetails
+                        );
+
+                        _logger.LogInformation($"✅ Status update email sent successfully to {customerEmail}");
+                        TempData["SuccessMessage"] = $"Appointment status updated to '{newStatusName}' and customer has been notified via email!";
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"No customer information found for appointment {id}");
+                        TempData["SuccessMessage"] = "Appointment status updated successfully!";
+                    }
+                }
+                catch (Exception emailEx)
+                {
+                    _logger.LogError($"❌ Failed to send status update email: {emailEx.Message}");
+                    TempData["SuccessMessage"] = $"Appointment status updated to '{newStatusName}' successfully!";
+                    TempData["ErrorMessage"] = $"⚠️ Note: Could not send email notification. Error: {emailEx.Message}";
+                }
+
                 return RedirectToAction("Appointments");
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error updating appointment status: {ex.Message}");
                 TempData["ErrorMessage"] = "An error occurred while updating the appointment status.";
                 return RedirectToAction("Appointments");
             }
