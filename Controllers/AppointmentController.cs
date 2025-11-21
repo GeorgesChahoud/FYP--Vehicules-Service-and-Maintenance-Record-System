@@ -15,6 +15,82 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
             _context = context;
         }
 
+        // Helper method to get current user ID
+        private int GetCurrentUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return userId;
+            }
+            return 0;
+        }
+
+        // VIEW CUSTOMER APPOINTMENTS
+        public async Task<IActionResult> Index()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0)
+            {
+                return RedirectToAction("CustomerLogin", "Auth");
+            }
+
+            try
+            {
+                var appointments = await _context.Appointments
+                    .Include(a => a.Car)
+                    .Include(a => a.Status)
+                    .Include(a => a.Service)
+                    .Where(a => a.Car.UserID == userId)
+                    .OrderByDescending(a => a.ScheduleAppointment)
+                    .ToListAsync();
+
+                return View(appointments);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error loading appointments.";
+                return View(new List<Appointment>());
+            }
+        }
+
+        // CANCEL APPOINTMENT
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelAppointment(int id)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0)
+            {
+                return RedirectToAction("CustomerLogin", "Auth");
+            }
+
+            try
+            {
+                var appointment = await _context.Appointments
+                    .Include(a => a.Car)
+                    .FirstOrDefaultAsync(a => a.ID == id && a.Car.UserID == userId);
+
+                if (appointment == null)
+                {
+                    TempData["ErrorMessage"] = "Appointment not found.";
+                    return RedirectToAction("Index");
+                }
+
+                // Set status to Cancelled (StatusID = 5)
+                appointment.StatusID = 5;
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Appointment cancelled successfully!";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error cancelling appointment.";
+                return RedirectToAction("Index");
+            }
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> BookAppointment(

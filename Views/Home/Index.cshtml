@@ -86,10 +86,11 @@
                 <a href="#about" class="nav-item nav-link">About</a>
                 <a href="#services" class="nav-item nav-link">Services</a>
                 
-                @* Show My Cars link if customer is logged in *@
+                @* Show My Cars and My Appointments links if customer is logged in *@
                 @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Customer"))
                 {
                     <a href="@Url.Action("Index", "Car")" class="nav-item nav-link">My Cars</a>
+                    <a href="@Url.Action("Index", "Appointment")" class="nav-item nav-link">My Appointments</a>
                 }
                 
                 <div class="nav-item dropdown">

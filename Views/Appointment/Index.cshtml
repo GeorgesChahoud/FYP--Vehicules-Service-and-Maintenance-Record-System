@@ -1,10 +1,10 @@
-@model IEnumerable<FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Car>
+@model IEnumerable<FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Appointment>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>My Cars - CarHub</title>
+    <title>My Appointments - CarHub</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Favicon -->
@@ -74,8 +74,8 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
                 <a href="@Url.Action("Index", "Home")" class="nav-item nav-link">Home</a>
-                <a href="@Url.Action("Index", "Car")" class="nav-item nav-link active">My Cars</a>
-                <a href="@Url.Action("Index", "Appointment")" class="nav-item nav-link">My Appointments</a>
+                <a href="@Url.Action("Index", "Car")" class="nav-item nav-link">My Cars</a>
+                <a href="@Url.Action("Index", "Appointment")" class="nav-item nav-link active">My Appointments</a>
             </div>
             <form method="post" asp-action="Logout" asp-controller="Auth" class="d-none d-lg-block">
                 @Html.AntiForgeryToken()
@@ -91,14 +91,14 @@
     <div class="container-fluid page-header mb-5 p-0" style="background-image: url(/img/carousel-bg-1.jpg);">
         <div class="container-fluid page-header-inner py-5">
             <div class="container text-center">
-                <h1 class="display-3 text-white mb-3 animated slideInDown">My Garage</h1>
-                <p class="text-white">Manage Your Vehicles</p>
+                <h1 class="display-3 text-white mb-3 animated slideInDown">My Appointments</h1>
+                <p class="text-white">Track Your Service Bookings</p>
             </div>
         </div>
     </div>
     <!-- Page Header End -->
 
-    <!-- My Cars Section Start -->
+    <!-- My Appointments Section Start -->
     <div class="container-xxl py-5">
         <div class="container">
             @if (TempData["SuccessMessage"] != null)
@@ -120,12 +120,12 @@
             }
 
             <div class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
-                <h1 class="mb-4">Total Vehicles: <span class="text-primary">@(Model?.Count() ?? 0)</span></h1>
+                <h1 class="mb-4">Total Appointments: <span class="text-primary">@(Model?.Count() ?? 0)</span></h1>
             </div>
 
             <div class="mb-4 text-center wow fadeInUp" data-wow-delay="0.2s">
-                <a href="@Url.Action("Create", "Car")" class="btn btn-primary py-3 px-5">
-                    <i class="fa fa-plus me-2"></i>Add New Car
+                <a href="@Url.Action("Index", "Home")#booking" class="btn btn-primary py-3 px-5">
+                    <i class="fa fa-plus me-2"></i>Book New Appointment
                 </a>
             </div>
 
@@ -136,52 +136,65 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Vehicle</th>
-                                <th>Year</th>
-                                <th>Plate Number</th>
-                                <th>VIN</th>
+                                <th>Service</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
                                 <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if (Model != null && Model.Any())
                             {
-                                @foreach (var car in Model)
+                                @foreach (var appointment in Model)
                                 {
                                     <tr>
-                                        <td><strong>#@car.ID</strong></td>
+                                        <td><strong>#@appointment.ID</strong></td>
                                         <td>
                                             <i class="fa fa-car text-primary me-2"></i>
-                                            @car.Make @car.Model
+                                            @(appointment.Car?.Make ?? "N/A") @(appointment.Car?.Model ?? "")
+                                            <br />
+                                            <small class="text-muted">@(appointment.Car?.Year.ToString() ?? "") - Plate: @(appointment.Car?.PlateNumber ?? "N/A")</small>
+                                        </td>
+                                        <td>
+                                            <i class="fa fa-tools text-muted me-2"></i>
+                                            @(appointment.Service?.ServiceName ?? "Not specified")
                                         </td>
                                         <td>
                                             <i class="fa fa-calendar text-muted me-2"></i>
-                                            @car.Year
+                                            @appointment.ScheduleAppointment.ToString("MMM dd, yyyy")
+                                            <br />
+                                            <small class="text-muted">@appointment.ScheduleAppointment.ToString("hh:mm tt")</small>
                                         </td>
                                         <td>
-                                            <i class="fa fa-id-card text-muted me-2"></i>
-                                            @car.PlateNumber
+                                            @{
+                                                var statusClass = appointment.Status?.Name switch
+                                                {
+                                                    "Pending" => "badge bg-warning text-dark",
+                                                    "Confirmed" => "badge bg-info",
+                                                    "In Progress" => "badge bg-primary",
+                                                    "Completed" => "badge bg-success",
+                                                    "Cancelled" => "badge bg-danger",
+                                                    _ => "badge bg-secondary"
+                                                };
+                                            }
+                                            <span class="@statusClass">
+                                                @(appointment.Status?.Name ?? "Unknown")
+                                            </span>
                                         </td>
-                                        <td>
-                                            @if (!string.IsNullOrEmpty(car.Vin))
+                                        <td class="text-center">
+                                            @if (appointment.Status?.Name != "Cancelled" && appointment.Status?.Name != "Completed")
                                             {
-                                                <i class="fa fa-barcode text-muted me-2"></i>
-                                                <span>@car.Vin</span>
+                                                <form method="post" asp-action="CancelAppointment" asp-controller="Appointment" asp-route-id="@appointment.ID" style="display:inline;">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to cancel this appointment?')">
+                                                        <i class="fa fa-times"></i> Cancel
+                                                    </button>
+                                                </form>
                                             }
                                             else
                                             {
-                                                <span class="text-muted">N/A</span>
+                                                <span class="text-muted">No actions</span>
                                             }
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="@Url.Action("Edit", "Car", new { id = car.ID })" class="btn btn-sm btn-warning me-2">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
-                                            <form method="post" asp-action="Delete" asp-controller="Car" asp-route-id="@car.ID" style="display:inline;">
-                                                @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this car?')">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </form>
                                         </td>
                                     </tr>
                                 }
@@ -194,13 +207,13 @@
                 {
                     <div class="alert alert-info text-center mt-4">
                         <i class="fa fa-info-circle me-2"></i>
-                        You haven't added any cars yet. Click "Add New Car" to get started.
+                        You haven't booked any appointments yet. Click "Book New Appointment" to schedule a service.
                     </div>
                 }
             </div>
         </div>
     </div>
-    <!-- My Cars Section End -->
+    <!-- My Appointments Section End -->
 
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
