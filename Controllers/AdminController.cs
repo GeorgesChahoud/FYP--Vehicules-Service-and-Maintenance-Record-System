@@ -525,25 +525,8 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                         .ThenInclude(u => u.Cars)
                     .ToListAsync();
 
-                // Decrypt emails for display
-                if (customers != null && customers.Any())
-                {
-                    foreach (var customer in customers)
-                    {
-                        if (customer.User != null && !string.IsNullOrEmpty(customer.User.Email))
-                        {
-                            try
-                            {
-                                customer.User.Email = _encryptionService.Decrypt(customer.User.Email);
-                            }
-                            catch (Exception)
-                            {
-                                customer.User.Email = "Error decrypting email";
-                            }
-                        }
-                    }
-                }
-
+                // Customer emails are stored as plain text (not encrypted)
+                // No need to decrypt them
                 return View(customers ?? new List<Customer>());
             }
             catch (Exception ex)
@@ -580,11 +563,10 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
-                var encryptedEmail = _encryptionService.Encrypt(Email);
-
+                // Customer emails are stored as plain text (not encrypted)
                 // Check if email already exists
                 var existingUser = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Email == encryptedEmail);
+                    .FirstOrDefaultAsync(u => u.Email == Email);
 
                 if (existingUser != null)
                 {
@@ -592,13 +574,13 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                     return View();
                 }
 
-                // Create User
+                // Create User (customer email is plain text)
                 var user = new User
                 {
                     RoleID = 3, // Customer role
                     FirstName = FirstName,
                     LastName = LastName,
-                    Email = encryptedEmail,
+                    Email = Email,  // Store as plain text
                     Password = _passwordHasher.HashPassword(Password),
                     PhoneNumber = PhoneNumber
                 };
@@ -638,9 +620,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 return NotFound();
             }
 
-            // Decrypt email for display
-            customer.User.Email = _encryptionService.Decrypt(customer.User.Email);
-
+            // Customer email is stored as plain text (no need to decrypt)
             return View(customer);
         }
 
@@ -668,26 +648,24 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
-                var encryptedEmail = _encryptionService.Encrypt(Email);
-
+                // Customer emails are stored as plain text (not encrypted)
                 // Check if email is being changed and if new email already exists
-                if (customer.User.Email != encryptedEmail)
+                if (customer.User.Email != Email)
                 {
                     var existingUser = await _context.Users
-                        .FirstOrDefaultAsync(u => u.Email == encryptedEmail && u.ID != UserID);
+                        .FirstOrDefaultAsync(u => u.Email == Email && u.ID != UserID);
 
                     if (existingUser != null)
                     {
                         ViewBag.ErrorMessage = "An account with this email already exists.";
-                        customer.User.Email = _encryptionService.Decrypt(customer.User.Email);
                         return View(customer);
                     }
                 }
 
-                // Update User
+                // Update User (customer email is plain text)
                 customer.User.FirstName = FirstName;
                 customer.User.LastName = LastName;
-                customer.User.Email = encryptedEmail;
+                customer.User.Email = Email;  // Store as plain text
                 customer.User.PhoneNumber = PhoneNumber;
 
                 // Update password only if provided
@@ -707,7 +685,6 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
             catch (Exception ex)
             {
                 ViewBag.ErrorMessage = "An error occurred while updating the customer.";
-                customer.User.Email = _encryptionService.Decrypt(customer.User.Email);
                 return View(customer);
             }
         }
@@ -767,25 +744,8 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                     .OrderByDescending(a => a.ScheduleAppointment)
                     .ToListAsync();
 
-                // Decrypt customer emails for display
-                if (appointments != null && appointments.Any())
-                {
-                    foreach (var appointment in appointments)
-                    {
-                        if (appointment.Car?.User != null && !string.IsNullOrEmpty(appointment.Car.User.Email))
-                        {
-                            try
-                            {
-                                appointment.Car.User.Email = _encryptionService.Decrypt(appointment.Car.User.Email);
-                            }
-                            catch (Exception)
-                            {
-                                appointment.Car.User.Email = "Error decrypting email";
-                            }
-                        }
-                    }
-                }
-
+                // Customer emails are stored as plain text (not encrypted)
+                // No need to decrypt them
                 return View(appointments ?? new List<Appointment>());
             }
             catch (Exception ex)
