@@ -34,6 +34,35 @@
     </div>
     <!-- Spinner End -->
 
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-light p-0">
+        <div class="row gx-0 d-none d-lg-flex">
+            <div class="col-lg-7 px-5 text-start">
+                <div class="h-100 d-inline-flex align-items-center py-3 me-4">
+                    <small class="fa fa-map-marker-alt text-primary me-2"></small>
+                    <small>123 Street, Beirut, Lebanon</small>
+                </div>
+                <div class="h-100 d-inline-flex align-items-center py-3">
+                    <small class="far fa-clock text-primary me-2"></small>
+                    <small>Mon - Fri : 09.00 AM - 09.00 PM</small>
+                </div>
+            </div>
+            <div class="col-lg-5 px-5 text-end">
+                <div class="h-100 d-inline-flex align-items-center py-3 me-4">
+                    <small class="fa fa-phone-alt text-primary me-2"></small>
+                    <small>+961 03 866 298</small>
+                </div>
+                <div class="h-100 d-inline-flex align-items-center">
+                    <a class="btn btn-sm-square bg-white text-primary me-1" href=""><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-sm-square bg-white text-primary me-1" href=""><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-sm-square bg-white text-primary me-1" href=""><i class="fab fa-linkedin-in"></i></a>
+                    <a class="btn btn-sm-square bg-white text-primary me-0" href=""><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
         <a href="@Url.Action("Index", "Home")" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
@@ -90,51 +119,84 @@
             }
 
             <div class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
-                <h1 class="mb-4">My Vehicles</h1>
+                <h1 class="mb-4">Total Vehicles: <span class="text-primary">@(Model?.Count() ?? 0)</span></h1>
+            </div>
+
+            <div class="mb-4 text-center wow fadeInUp" data-wow-delay="0.2s">
                 <a href="@Url.Action("Create", "Car")" class="btn btn-primary py-3 px-5">
                     <i class="fa fa-plus me-2"></i>Add New Car
                 </a>
             </div>
 
-            @if (Model != null && Model.Any())
-            {
-                <div class="row g-4">
-                    @foreach (var car in Model)
-                    {
-                        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                            <div class="service-item bg-light rounded h-100 p-5">
-                                <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 65px; height: 65px;">
-                                    <i class="fa fa-car fa-2x text-primary"></i>
-                                </div>
-                                <h4 class="mb-3">@car.Year @car.Make @car.Model</h4>
-                                <p class="mb-2"><strong>Plate:</strong> @car.PlateNumber</p>
-                                @if (!string.IsNullOrEmpty(car.Vin))
+            <div class="bg-light rounded p-4 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Vehicle</th>
+                                <th>Year</th>
+                                <th>Plate Number</th>
+                                <th>VIN</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var car in Model)
                                 {
-                                    <p class="mb-4"><strong>VIN:</strong> @car.Vin</p>
+                                    <tr>
+                                        <td><strong>#@car.ID</strong></td>
+                                        <td>
+                                            <i class="fa fa-car text-primary me-2"></i>
+                                            @car.Make @car.Model
+                                        </td>
+                                        <td>
+                                            <i class="fa fa-calendar text-muted me-2"></i>
+                                            @car.Year
+                                        </td>
+                                        <td>
+                                            <i class="fa fa-id-card text-muted me-2"></i>
+                                            @car.PlateNumber
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(car.Vin))
+                                            {
+                                                <i class="fa fa-barcode text-muted me-2"></i>
+                                                <span>@car.Vin</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">N/A</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="@Url.Action("Edit", "Car", new { id = car.ID })" class="btn btn-sm btn-warning me-2">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <form method="post" asp-action="Delete" asp-controller="Car" asp-route-id="@car.ID" style="display:inline;">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this car?')">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
                                 }
-                                <div class="d-flex gap-2">
-                                    <a href="@Url.Action("Edit", "Car", new { id = car.ID })" class="btn btn-warning btn-sm flex-fill">
-                                        <i class="fa fa-edit"></i> Edit
-                                    </a>
-                                    <form method="post" asp-action="Delete" asp-route-id="@car.ID" class="flex-fill">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-danger btn-sm w-100" onclick="return confirm('Delete this car?')">
-                                            <i class="fa fa-trash"></i> Delete
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    }
+                            }
+                        </tbody>
+                    </table>
                 </div>
-            }
-            else
-            {
-                <div class="alert alert-info text-center mt-4 wow fadeInUp">
-                    <i class="fa fa-info-circle me-2"></i>
-                    You haven't added any cars yet. Click "Add New Car" to get started.
-                </div>
-            }
+
+                @if (Model == null || !Model.Any())
+                {
+                    <div class="alert alert-info text-center mt-4">
+                        <i class="fa fa-info-circle me-2"></i>
+                        You haven't added any cars yet. Click "Add New Car" to get started.
+                    </div>
+                }
+            </div>
         </div>
     </div>
     <!-- My Cars Section End -->
