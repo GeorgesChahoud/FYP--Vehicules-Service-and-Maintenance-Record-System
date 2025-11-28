@@ -11,6 +11,7 @@
         /////////////////////////////////////////////////////////////////////// RELATIONSHIPS ///////////////////////////////////////////////////////////////////////
         public Appointment Appointment { get; set; }
 
-        public ICollection<ReceiptService> ReceiptServices = new List<ReceiptService>();
+        public ICollection<ReceiptService> ReceiptServices { get; set; } = new List<ReceiptService>();
+        public ICollection<ReceiptPart> ReceiptParts { get; set; } = new List<ReceiptPart>();
     }
 }

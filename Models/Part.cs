@@ -10,7 +10,7 @@
         public int Quantity { get; set; }
 
         /////////////////////////////////////////////////////////////////////// RELATIONSHIPS ///////////////////////////////////////////////////////////////////////
-        public ICollection<PartService> PartServices = new List<PartService>();
-
+        public ICollection<PartService> PartServices { get; set; } = new List<PartService>();
+        public ICollection<ReceiptPart> ReceiptParts { get; set; } = new List<ReceiptPart>();
     }
 }

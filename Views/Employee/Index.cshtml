@@ -2,7 +2,7 @@
     Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
     ViewData["Title"] = "Employee Dashboard";
     ViewData["PageHeader"] = "Employee Dashboard";
-    ViewData["PageSubtitle"] = "Service Management & Overview";
+    ViewData["PageSubtitle"] = "My Work Overview";
     ViewData["ActivePage"] = "Dashboard";
 }
 
@@ -21,82 +21,97 @@
 <div class="container-xxl py-5">
     <div class="container">
         <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-            <h1 class="mb-5">Management Dashboard</h1>
+            <h1 class="mb-5">My Dashboard</h1>
         </div>
         <div class="row g-4">
-            <!-- Employees Card -->
+            <!-- My Appointments Card -->
             <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="service-item bg-light rounded h-100 p-5 text-center">
                     <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 80px; height: 80px;">
-                        <i class="fa fa-users-cog fa-2x text-primary"></i>
+                        <i class="fa fa-calendar-check fa-2x text-primary"></i>
                     </div>
-                    <h4 class="mb-3">Employees</h4>
-                    <h2 class="display-4 text-primary mb-3">@ViewBag.EmployeeCount</h2>
-                    <p class="mb-4">View staff members and technicians</p>
-                    <a class="btn btn-primary py-3 px-5" href="@Url.Action("Employees", "Admin")">
+                    <h4 class="mb-3">My Appointments</h4>
+                    <h2 class="display-4 text-primary mb-3">@ViewBag.MyAppointmentCount</h2>
+                    <p class="mb-4">Total appointments assigned to me</p>
+                    <a class="btn btn-primary py-3 px-5" href="@Url.Action("MyAppointments", "Employee")">
                         View<i class="fa fa-arrow-right ms-3"></i>
                     </a>
                 </div>
             </div>
 
-            <!-- Customers Card -->
+            <!-- My Customers Card -->
             <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                 <div class="service-item bg-light rounded h-100 p-5 text-center">
                     <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 80px; height: 80px;">
                         <i class="fa fa-users fa-2x text-primary"></i>
                     </div>
-                    <h4 class="mb-3">Customers</h4>
-                    <h2 class="display-4 text-primary mb-3">@ViewBag.CustomerCount</h2>
-                    <p class="mb-4">View registered customers and their data</p>
-                    <a class="btn btn-primary py-3 px-5" href="@Url.Action("Customers", "Admin")">
+                    <h4 class="mb-3">My Customers</h4>
+                    <h2 class="display-4 text-primary mb-3">@ViewBag.MyCustomerCount</h2>
+                    <p class="mb-4">Customers I'm serving</p>
+                    <a class="btn btn-primary py-3 px-5" href="@Url.Action("MyCustomers", "Employee")">
                         View<i class="fa fa-arrow-right ms-3"></i>
                     </a>
                 </div>
             </div>
 
-            <!-- Services Card -->
+            <!-- Pending Appointments Card -->
             <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                 <div class="service-item bg-light rounded h-100 p-5 text-center">
                     <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 80px; height: 80px;">
-                        <i class="fa fa-tools fa-2x text-primary"></i>
+                        <i class="fa fa-clock fa-2x text-warning"></i>
                     </div>
-                    <h4 class="mb-3">Services</h4>
-                    <h2 class="display-4 text-primary mb-3">@ViewBag.ServiceCount</h2>
-                    <p class="mb-4">View available services offered</p>
-                    <a class="btn btn-primary py-3 px-5" href="@Url.Action("Services", "Admin")">
+                    <h4 class="mb-3">Pending</h4>
+                    <h2 class="display-4 text-warning mb-3">@ViewBag.PendingAppointments</h2>
+                    <p class="mb-4">Appointments to work on</p>
+                    <a class="btn btn-warning py-3 px-5" href="@Url.Action("MyAppointments", "Employee")">
                         View<i class="fa fa-arrow-right ms-3"></i>
                     </a>
                 </div>
             </div>
 
-            <!-- Parts Card -->
+            <!-- Completed Appointments Card -->
             <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
                 <div class="service-item bg-light rounded h-100 p-5 text-center">
                     <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 80px; height: 80px;">
-                        <i class="fa fa-cogs fa-2x text-primary"></i>
+                        <i class="fa fa-check-circle fa-2x text-success"></i>
                     </div>
-                    <h4 class="mb-3">Parts</h4>
-                    <h2 class="display-4 text-primary mb-3">@ViewBag.PartCount</h2>
-                    <p class="mb-4">View parts inventory and stock</p>
-                    <a class="btn btn-primary py-3 px-5" href="@Url.Action("Parts", "Admin")">
+                    <h4 class="mb-3">Completed</h4>
+                    <h2 class="display-4 text-success mb-3">@ViewBag.CompletedAppointments</h2>
+                    <p class="mb-4">Successfully finished jobs</p>
+                    <a class="btn btn-success py-3 px-5" href="@Url.Action("MyAppointments", "Employee")">
                         View<i class="fa fa-arrow-right ms-3"></i>
                     </a>
                 </div>
             </div>
         </div>
 
-        <!-- Second Row for Appointments -->
+        <!-- Second Row for Parts -->
         <div class="row g-4 mt-3">
-            <!-- Appointments Card -->
-            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.9s">
+            <!-- Parts Inventory Card -->
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.9s">
                 <div class="service-item bg-light rounded h-100 p-5 text-center">
                     <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 80px; height: 80px;">
-                        <i class="fa fa-calendar-check fa-2x text-primary"></i>
+                        <i class="fa fa-cogs fa-2x text-primary"></i>
                     </div>
-                    <h4 class="mb-3">Appointments</h4>
-                    <h2 class="display-4 text-primary mb-3">@ViewBag.AppointmentCount</h2>
-                    <p class="mb-4">View and manage customer appointments</p>
-                    <a class="btn btn-primary py-3 px-5" href="@Url.Action("Appointments", "Admin")">
+                    <h4 class="mb-3">Parts Inventory</h4>
+                    <h2 class="display-4 text-primary mb-3">@ViewBag.TotalParts</h2>
+                    <p class="mb-4">View available parts and stock</p>
+                    <a class="btn btn-primary py-3 px-5" href="@Url.Action("PartsInventory", "Employee")">
+                        View<i class="fa fa-arrow-right ms-3"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- My Receipts Card -->
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="1.1s">
+                <div class="service-item bg-light rounded h-100 p-5 text-center">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 80px; height: 80px;">
+                        <i class="fa fa-file-invoice fa-2x text-success"></i>
+                    </div>
+                    <h4 class="mb-3">My Receipts</h4>
+                    <h2 class="display-4 text-success mb-3">@ViewBag.MyReceiptsCount</h2>
+                    <p class="mb-4">View all generated receipts</p>
+                    <a class="btn btn-success py-3 px-5" href="@Url.Action("MyReceipts", "Employee")">
                         View<i class="fa fa-arrow-right ms-3"></i>
                     </a>
                 </div>
@@ -113,33 +128,43 @@
             <h1 class="mb-5">Quick Access</h1>
         </div>
         <div class="row g-4">
-            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="d-flex py-5 px-4 bg-white rounded">
-                    <i class="fa fa-users-cog fa-3x text-primary flex-shrink-0"></i>
+                    <i class="fa fa-calendar-alt fa-3x text-primary flex-shrink-0"></i>
                     <div class="ps-4">
-                        <h5 class="mb-3">View Employees</h5>
-                        <p>Check staff members and their information</p>
-                        <a class="text-secondary border-bottom" href="@Url.Action("Employees", "Admin")">View Now</a>
+                        <h5 class="mb-3">My Appointments</h5>
+                        <p>View and manage my assigned appointments</p>
+                        <a class="text-secondary border-bottom" href="@Url.Action("MyAppointments", "Employee")">View Now</a>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                 <div class="d-flex py-5 px-4 bg-white rounded">
-                    <i class="fa fa-tools fa-3x text-primary flex-shrink-0"></i>
+                    <i class="fa fa-users fa-3x text-primary flex-shrink-0"></i>
                     <div class="ps-4">
-                        <h5 class="mb-3">View Services</h5>
-                        <p>Browse available services for customers</p>
-                        <a class="text-secondary border-bottom" href="@Url.Action("Services", "Admin")">View Now</a>
+                        <h5 class="mb-3">My Customers</h5>
+                        <p>Browse customers I'm serving</p>
+                        <a class="text-secondary border-bottom" href="@Url.Action("MyCustomers", "Employee")">View Now</a>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                 <div class="d-flex py-5 px-4 bg-white rounded">
-                    <i class="fa fa-cogs fa-3x text-primary flex-shrink-0"></i>
+                    <i class="fa fa-box-open fa-3x text-primary flex-shrink-0"></i>
                     <div class="ps-4">
-                        <h5 class="mb-3">View Parts</h5>
-                        <p>Check parts inventory and availability</p>
-                        <a class="text-secondary border-bottom" href="@Url.Action("Parts", "Admin")">View Now</a>
+                        <h5 class="mb-3">Parts Stock</h5>
+                        <p>Check parts availability before service</p>
+                        <a class="text-secondary border-bottom" href="@Url.Action("PartsInventory", "Employee")">View Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
+                <div class="d-flex py-5 px-4 bg-white rounded">
+                    <i class="fa fa-file-invoice fa-3x text-success flex-shrink-0"></i>
+                    <div class="ps-4">
+                        <h5 class="mb-3">My Receipts</h5>
+                        <p>View all generated receipts</p>
+                        <a class="text-secondary border-bottom" href="@Url.Action("MyReceipts", "Employee")">View Now</a>
                     </div>
                 </div>
             </div>

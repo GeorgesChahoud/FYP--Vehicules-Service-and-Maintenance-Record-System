@@ -24,6 +24,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Data
         public DbSet<Part> Parts { get; set; }
         public DbSet<ReceiptService> ReceiptServices { get; set; }
         public DbSet<PartService> PartServices { get; set; }
+        public DbSet<ReceiptPart> ReceiptParts { get; set; }
         public DbSet<PasswordReset> PasswordResets { get; set; }
         public DbSet<RegistrationVerification> RegistrationVerifications { get; set; }
 

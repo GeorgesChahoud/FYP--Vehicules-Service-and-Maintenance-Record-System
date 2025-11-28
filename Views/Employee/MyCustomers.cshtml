@@ -1,0 +1,104 @@
+@model dynamic
+
+@{
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+    ViewData["Title"] = "My Customers";
+    ViewData["PageHeader"] = "My Customers";
+    ViewData["PageSubtitle"] = "Customers Assigned to Me";
+    ViewData["ActivePage"] = "MyCustomers";
+}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show wow fadeInDown">
+                <i class="fa fa-check-circle me-2"></i>
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
+            <h1 class="mb-4">Total Customers: <span class="text-primary">@(Model?.Count ?? 0)</span></h1>
+        </div>
+
+        <div class="bg-light rounded p-4 wow fadeInUp" data-wow-delay="0.3s">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Vehicle</th>
+                            <th>Last Appointment</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td><strong>#@item.Customer.ID</strong></td>
+                                    <td>
+                                        <i class="fa fa-user text-primary me-2"></i>
+                                        @item.User.FirstName @item.User.LastName
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-envelope text-muted me-2"></i>
+                                        @item.User.Email
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-phone text-muted me-2"></i>
+                                        @item.User.PhoneNumber
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-map-marker-alt text-muted me-2"></i>
+                                        @item.Customer.Address
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-car text-muted me-2"></i>
+                                        @item.Car.Year @item.Car.Make @item.Car.Model
+                                        <br />
+                                        <small class="text-muted">Plate: @item.Car.PlateNumber</small>
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-calendar text-muted me-2"></i>
+                                        @item.LastAppointment.ToString("MMM dd, yyyy")
+                                    </td>
+                                    <td>
+                                        @{
+                                            var statusBadge = item.Status switch
+                                            {
+                                                "Pending" => "badge bg-warning text-dark",
+                                                "Confirmed" => "badge bg-info",
+                                                "In Progress" => "badge bg-primary",
+                                                "Completed" => "badge bg-success",
+                                                "Cancelled" => "badge bg-danger",
+                                                _ => "badge bg-secondary"
+                                            };
+                                        }
+                                        <span class="@statusBadge">@item.Status</span>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (Model == null || Model.Count == 0)
+            {
+                <div class="alert alert-info text-center mt-4">
+                    <i class="fa fa-info-circle me-2"></i>
+                    No customers assigned to you yet.
+                </div>
+            }
+        </div>
+    </div>
+</div>

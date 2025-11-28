@@ -1,0 +1,456 @@
+@model FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Receipt
+
+@{
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+    ViewData["Title"] = "Receipt #" + Model.ID.ToString("D6");
+    ViewData["PageHeader"] = "Receipt Details";
+    ViewData["PageSubtitle"] = "Service Receipt #" + Model.ID.ToString("D6");
+    ViewData["ActivePage"] = "MyReceipts";
+}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Receipt Container -->
+                <div id="receiptContainer" class="card shadow-lg wow fadeInUp">
+                    <!-- Receipt Header -->
+                    <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #D81324 0%, #0B2154 100%);">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="text-start">
+                                <h2 class="mb-0"><i class="fa fa-wrench me-2"></i>CarHub Garage</h2>
+                                <small>Professional Auto Service</small>
+                            </div>
+                            <div class="text-end">
+                                <div class="receipt-badge">
+                                    <h4 class="mb-0">RECEIPT</h4>
+                                    <h5 class="mb-0">#@Model.ID.ToString("D6")</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-5">
+                        <!-- Business & Receipt Info -->
+                        <div class="row mb-4 pb-4 border-bottom">
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3"><i class="fa fa-building me-2"></i>FROM</h6>
+                                <p class="mb-1"><strong>CarHub Garage</strong></p>
+                                <p class="mb-1"><i class="fa fa-map-marker-alt text-muted me-2"></i>123 Main Street, Downtown</p>
+                                <p class="mb-1"><i class="fa fa-city text-muted me-2"></i>New York, NY 10001</p>
+                                <p class="mb-1"><i class="fa fa-phone text-muted me-2"></i>+1 (555) 123-4567</p>
+                                <p class="mb-1"><i class="fa fa-envelope text-muted me-2"></i>service@carhub-garage.com</p>
+                                <p class="mb-0"><i class="fa fa-globe text-muted me-2"></i>www.carhub-garage.com</p>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <h6 class="text-primary mb-3"><i class="fa fa-calendar me-2"></i>RECEIPT INFORMATION</h6>
+                                <div class="receipt-info-box p-3 bg-light rounded">
+                                    <p class="mb-2">
+                                        <strong>Receipt #:</strong> 
+                                        <span class="badge bg-primary ms-2">@Model.ID.ToString("D6")</span>
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Date Issued:</strong> 
+                                        <span class="text-muted ms-2">@Model.DateANDTime.ToString("MMMM dd, yyyy")</span>
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Time:</strong> 
+                                        <span class="text-muted ms-2">@Model.DateANDTime.ToString("hh:mm tt")</span>
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Appointment #:</strong> 
+                                        <span class="badge bg-info ms-2">@Model.AppointmentID.ToString("D6")</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Customer & Vehicle Info -->
+                        <div class="row mb-4 pb-4 border-bottom">
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3"><i class="fa fa-user me-2"></i>CUSTOMER INFORMATION</h6>
+                                <div class="customer-info-box p-3 bg-light rounded">
+                                    <p class="mb-2">
+                                        <strong>Name:</strong> 
+                                        <span class="ms-2">@Model.Appointment.Car.User.FirstName @Model.Appointment.Car.User.LastName</span>
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Email:</strong> 
+                                        <span class="ms-2">@Model.Appointment.Car.User.Email</span>
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Phone:</strong> 
+                                        <span class="ms-2">@Model.Appointment.Car.User.PhoneNumber</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3"><i class="fa fa-car me-2"></i>VEHICLE INFORMATION</h6>
+                                <div class="vehicle-info-box p-3 bg-light rounded">
+                                    <p class="mb-2">
+                                        <strong>Vehicle:</strong> 
+                                        <span class="ms-2">@Model.Appointment.Car.Year @Model.Appointment.Car.Make @Model.Appointment.Car.Model</span>
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Plate Number:</strong> 
+                                        <span class="badge bg-dark ms-2">@Model.Appointment.Car.PlateNumber</span>
+                                    </p>
+                                    @if (!string.IsNullOrEmpty(Model.Appointment.Car.Vin))
+                                    {
+                                        <p class="mb-0">
+                                            <strong>VIN:</strong> 
+                                            <span class="ms-2 font-monospace">@Model.Appointment.Car.Vin</span>
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Service Details -->
+                        <div class="mb-4 pb-4 border-bottom">
+                            <h6 class="text-primary mb-3"><i class="fa fa-tools me-2"></i>SERVICE DETAILS</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Service Type:</strong> 
+                                        <span class="ms-2">@Model.Appointment.Service.ServiceName</span>
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Service Description:</strong> 
+                                        <span class="ms-2 text-muted">@Model.Appointment.Service.Description</span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Technician:</strong> 
+                                        <span class="ms-2">@Model.Appointment.Employee.User.FirstName @Model.Appointment.Employee.User.LastName</span>
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Service Date:</strong> 
+                                        <span class="ms-2">@Model.Appointment.ScheduleAppointment.ToString("MMMM dd, yyyy")</span>
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Service Time:</strong> 
+                                        <span class="ms-2">@Model.Appointment.ScheduleAppointment.ToString("hh:mm tt")</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Items & Pricing Table -->
+                        <div class="mb-4">
+                            <h6 class="text-primary mb-3"><i class="fa fa-list-alt me-2"></i>ITEMS & SERVICES</h6>
+                            <div class="table-responsive">
+                                <table class="table table-hover receipt-table">
+                                    <thead style="background-color: #0B2154; color: white;">
+                                        <tr>
+                                            <th style="width: 50px;">#</th>
+                                            <th>Description</th>
+                                            <th class="text-center" style="width: 100px;">Quantity</th>
+                                            <th class="text-end" style="width: 150px;">Unit Price</th>
+                                            <th class="text-end" style="width: 150px;">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Service Fee -->
+                                        <tr class="service-row">
+                                            <td><strong>1</strong></td>
+                                            <td>
+                                                <strong>@Model.Appointment.Service.ServiceName</strong>
+                                                <br />
+                                                <small class="text-muted">Professional automotive service</small>
+                                            </td>
+                                            <td class="text-center">1</td>
+                                            <td class="text-end">$@Model.Appointment.Employee.FeeByService.ToString("F2")</td>
+                                            <td class="text-end"><strong>$@Model.Appointment.Employee.FeeByService.ToString("F2")</strong></td>
+                                        </tr>
+
+                                        <!-- Parts Used -->
+                                        @if (Model.ReceiptParts != null && Model.ReceiptParts.Any())
+                                        {
+                                            int itemNumber = 2;
+                                            foreach (var receiptPart in Model.ReceiptParts)
+                                            {
+                                                var lineTotal = receiptPart.PriceAtTime * receiptPart.QuantityUsed;
+                                                <tr class="part-row">
+                                                    <td><strong>@itemNumber</strong></td>
+                                                    <td>
+                                                        <strong>@receiptPart.Part.PartName</strong>
+                                                        <br />
+                                                        <small class="text-muted">Replacement part</small>
+                                                    </td>
+                                                    <td class="text-center">@receiptPart.QuantityUsed</td>
+                                                    <td class="text-end">$@receiptPart.PriceAtTime.ToString("F2")</td>
+                                                    <td class="text-end"><strong>$@lineTotal.ToString("F2")</strong></td>
+                                                </tr>
+                                                itemNumber++;
+                                            }
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        @{
+                                            var subtotal = Model.Total;
+                                            var tax = subtotal * 0.0; // Set tax rate if needed
+                                            var grandTotal = subtotal + tax;
+                                        }
+                                        <tr class="subtotal-row">
+                                            <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+                                            <td class="text-end"><strong>$@subtotal.ToString("F2")</strong></td>
+                                        </tr>
+                                        @if (tax > 0)
+                                        {
+                                            <tr class="tax-row">
+                                                <td colspan="4" class="text-end">Tax (0%):</td>
+                                                <td class="text-end">$@tax.ToString("F2")</td>
+                                            </tr>
+                                        }
+                                        <tr class="total-row" style="background-color: #f8f9fa;">
+                                            <td colspan="4" class="text-end">
+                                                <h5 class="mb-0 text-primary">TOTAL AMOUNT:</h5>
+                                            </td>
+                                            <td class="text-end">
+                                                <h4 class="mb-0 text-success">$@grandTotal.ToString("F2")</h4>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Payment Status -->
+                        <div class="alert alert-success mb-4" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-check-circle fa-2x me-3"></i>
+                                <div>
+                                    <h6 class="mb-1">Payment Status: PAID IN FULL</h6>
+                                    <small>Thank you for your payment. This receipt serves as proof of payment.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes & Terms -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="notes-box p-3 bg-light rounded">
+                                    <h6 class="text-primary mb-2"><i class="fa fa-sticky-note me-2"></i>Notes</h6>
+                                    <p class="mb-0 small">
+                                        • All parts come with a 90-day warranty<br />
+                                        • Service warranty: 30 days<br />
+                                        • Keep this receipt for warranty claims<br />
+                                        • Next service recommended in 3 months
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="warranty-box p-3 bg-light rounded">
+                                    <h6 class="text-primary mb-2"><i class="fa fa-shield-alt me-2"></i>Warranty Info</h6>
+                                    <p class="mb-0 small">
+                                        This receipt is valid for warranty claims. Please present it along with your vehicle for any warranty-related services.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms & Conditions -->
+                        <div class="terms-section p-3 bg-light rounded mb-4">
+                            <h6 class="text-primary mb-2"><i class="fa fa-file-contract me-2"></i>Terms & Conditions</h6>
+                            <p class="mb-0 small text-muted">
+                                All services are performed by certified technicians. Parts and labor are guaranteed for the period specified. 
+                                CarHub Garage is not responsible for pre-existing conditions or damages not related to services performed. 
+                                Customer is responsible for maintaining regular service intervals as recommended by the manufacturer.
+                            </p>
+                        </div>
+
+                        <!-- Signature Section -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="signature-box p-3 border rounded">
+                                    <p class="mb-2"><strong>Technician Signature:</strong></p>
+                                    <div class="signature-line mb-2" style="border-bottom: 2px solid #000; height: 50px;">
+                                        <em class="text-muted" style="font-family: 'Brush Script MT', cursive; font-size: 1.5rem;">
+                                            @Model.Appointment.Employee.User.FirstName @Model.Appointment.Employee.User.LastName
+                                        </em>
+                                    </div>
+                                    <small class="text-muted">@Model.Appointment.Employee.User.FirstName @Model.Appointment.Employee.User.LastName</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="signature-box p-3 border rounded">
+                                    <p class="mb-2"><strong>Customer Signature:</strong></p>
+                                    <div class="signature-line mb-2" style="border-bottom: 2px solid #000; height: 50px;"></div>
+                                    <small class="text-muted">@Model.Appointment.Car.User.FirstName @Model.Appointment.Car.User.LastName</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Thank You Message -->
+                        <div class="text-center thank-you-box p-4 rounded" style="background: linear-gradient(135deg, #D81324 0%, #0B2154 100%); color: white;">
+                            <h4 class="mb-2"><i class="fa fa-heart me-2"></i>Thank You for Your Business!</h4>
+                            <p class="mb-0">We appreciate your trust in CarHub Garage. Drive safe!</p>
+                        </div>
+                    </div>
+
+                    <!-- Receipt Footer -->
+                    <div class="card-footer text-center bg-light py-3 no-print">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fa fa-lock me-1"></i>This is an official receipt from CarHub Garage
+                            </small>
+                            <small class="text-muted">
+                                Generated on @DateTime.Now.ToString("MMMM dd, yyyy")
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4 no-print">
+                    <a href="@Url.Action("MyReceipts", "Employee")" class="btn btn-secondary btn-lg">
+                        <i class="fa fa-arrow-left me-2"></i>Back to My Receipts
+                    </a>
+                    <div class="btn-group">
+                        <button onclick="window.print()" class="btn btn-primary btn-lg">
+                            <i class="fa fa-print me-2"></i>Print Receipt
+                        </button>
+                        <button onclick="downloadPDF()" class="btn btn-success btn-lg">
+                            <i class="fa fa-download me-2"></i>Download PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        /* Receipt Styling */
+        .receipt-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: 2px solid white;
+        }
+
+        .receipt-info-box,
+        .customer-info-box,
+        .vehicle-info-box {
+            border-left: 4px solid #D81324;
+        }
+
+        .receipt-table {
+            border: 1px solid #dee2e6;
+        }
+
+        .receipt-table thead th {
+            border: none;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .receipt-table tbody tr {
+            transition: background-color 0.3s;
+        }
+
+        .receipt-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .service-row {
+            background-color: #fff9f0;
+        }
+
+        .part-row {
+            background-color: #f0f8ff;
+        }
+
+        .subtotal-row,
+        .tax-row {
+            font-size: 1.1rem;
+        }
+
+        .total-row {
+            border-top: 3px double #0B2154;
+            border-bottom: 3px double #0B2154;
+        }
+
+        .signature-line {
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 5px;
+        }
+
+        .thank-you-box {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Print Styles */
+        @@media print {
+            .no-print,
+            .navbar,
+            .footer,
+            .page-header,
+            .btn,
+            .card-footer {
+                display: none !important;
+            }
+
+            .card {
+                box-shadow: none !important;
+                border: 2px solid #000 !important;
+                page-break-inside: avoid;
+            }
+
+            .card-header {
+                background: #0B2154 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .receipt-badge {
+                border-color: #000 !important;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .container-xxl,
+            .container {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .thank-you-box {
+                background: #0B2154 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .table {
+                border-color: #000 !important;
+            }
+
+            .total-row {
+                background-color: #f8f9fa !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        @@page {
+            margin: 0.5cm;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        function downloadPDF() {
+            alert('PDF download functionality requires a PDF generation library. For now, please use Print to PDF option in your browser print dialog.');
+            window.print();
+        }
+    </script>
+}

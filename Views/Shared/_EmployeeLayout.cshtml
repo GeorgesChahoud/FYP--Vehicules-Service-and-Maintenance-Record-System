@@ -43,7 +43,7 @@
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
         <a href="@Url.Action("Index", "Employee")" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-            <h2 class="m-0 text-primary"><i class="fa fa-wrench me-3"></i>CarHub Employee</h2>
+            <h2 class="m-0 text-primary"><i class="fa fa-user-tie me-3"></i>CarHub Employee</h2>
         </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
@@ -51,11 +51,10 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
                 <a href="@Url.Action("Index", "Employee")" class="nav-item nav-link @(ViewData["ActivePage"]?.ToString() == "Dashboard" ? "active" : "")">Dashboard</a>
-                <a href="@Url.Action("Employees", "Admin")" class="nav-item nav-link @(ViewData["ActivePage"]?.ToString() == "Employees" ? "active" : "")">Employees</a>
-                <a href="@Url.Action("Services", "Admin")" class="nav-item nav-link @(ViewData["ActivePage"]?.ToString() == "Services" ? "active" : "")">Services</a>
-                <a href="@Url.Action("Parts", "Admin")" class="nav-item nav-link @(ViewData["ActivePage"]?.ToString() == "Parts" ? "active" : "")">Parts</a>
-                <a href="@Url.Action("Customers", "Admin")" class="nav-item nav-link @(ViewData["ActivePage"]?.ToString() == "Customers" ? "active" : "")">Customers</a>
-                <a href="@Url.Action("Appointments", "Admin")" class="nav-item nav-link @(ViewData["ActivePage"]?.ToString() == "Appointments" ? "active" : "")">Appointments</a>
+                <a href="@Url.Action("MyAppointments", "Employee")" class="nav-item nav-link @(ViewData["ActivePage"]?.ToString() == "MyAppointments" ? "active" : "")">My Appointments</a>
+                <a href="@Url.Action("MyCustomers", "Employee")" class="nav-item nav-link @(ViewData["ActivePage"]?.ToString() == "MyCustomers" ? "active" : "")">My Customers</a>
+                <a href="@Url.Action("MyReceipts", "Employee")" class="nav-item nav-link @(ViewData["ActivePage"]?.ToString() == "MyReceipts" ? "active" : "")">My Receipts</a>
+                <a href="@Url.Action("PartsInventory", "Employee")" class="nav-item nav-link @(ViewData["ActivePage"]?.ToString() == "PartsInventory" ? "active" : "")">Parts Inventory</a>
             </div>
             <form method="post" asp-action="Logout" asp-controller="Auth" class="d-none d-lg-block">
                 @Html.AntiForgeryToken()
@@ -100,11 +99,11 @@
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <h4 class="text-light mb-4">Quick Links</h4>
-                    <a class="btn btn-link" href="@Url.Action("Employees", "Admin")">View Employees</a>
-                    <a class="btn btn-link" href="@Url.Action("Services", "Admin")">View Services</a>
-                    <a class="btn btn-link" href="@Url.Action("Parts", "Admin")">View Parts</a>
-                    <a class="btn btn-link" href="@Url.Action("Customers", "Admin")">View Customers</a>
-                    <a class="btn btn-link" href="@Url.Action("Appointments", "Admin")">View Appointments</a>
+                    <a class="btn btn-link" href="@Url.Action("Index", "Employee")">Dashboard</a>
+                    <a class="btn btn-link" href="@Url.Action("MyAppointments", "Employee")">My Appointments</a>
+                    <a class="btn btn-link" href="@Url.Action("MyCustomers", "Employee")">My Customers</a>
+                    <a class="btn btn-link" href="@Url.Action("MyReceipts", "Employee")">My Receipts</a>
+                    <a class="btn btn-link" href="@Url.Action("PartsInventory", "Employee")">Parts Inventory</a>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <h4 class="text-light mb-4">Contact</h4>

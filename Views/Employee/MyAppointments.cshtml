@@ -1,0 +1,234 @@
+@model IEnumerable<FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Appointment>
+
+@{
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+    ViewData["Title"] = "My Appointments";
+    ViewData["PageHeader"] = "My Appointments";
+    ViewData["PageSubtitle"] = "Appointments Assigned to Me";
+    ViewData["ActivePage"] = "MyAppointments";
+}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show wow fadeInDown">
+                <i class="fa fa-check-circle me-2"></i>
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show wow fadeInDown">
+                <i class="fa fa-exclamation-triangle me-2"></i>
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
+            <h1 class="mb-4">Total Appointments: <span class="text-primary">@(Model?.Count() ?? 0)</span></h1>
+        </div>
+
+        <div class="bg-light rounded p-4 wow fadeInUp" data-wow-delay="0.3s">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle" style="min-width: 1600px;">
+                    <thead class="table-dark">
+                        <tr>
+                            <th style="width: 60px;">ID</th>
+                            <th style="width: 150px;">Customer</th>
+                            <th style="width: 180px;">Email</th>
+                            <th style="width: 130px;">Phone</th>
+                            <th style="width: 180px;">Car</th>
+                            <th style="width: 150px;">Service</th>
+                            <th style="width: 140px;">Date & Time</th>
+                            <th style="width: 110px;">Status</th>
+                            <th class="text-center" style="width: 250px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var appointment in Model)
+                            {
+                                <tr>
+                                    <td><strong>#@appointment.ID</strong></td>
+                                    <td style="white-space: nowrap;">
+                                        <i class="fa fa-user text-primary me-2"></i>
+                                        @(appointment.Car?.User?.FirstName ?? "N/A") @(appointment.Car?.User?.LastName ?? "")
+                                    </td>
+                                    <td style="word-break: break-word;">
+                                        <i class="fa fa-envelope text-muted me-2"></i>
+                                        <small>@(appointment.Car?.User?.Email ?? "N/A")</small>
+                                    </td>
+                                    <td style="white-space: nowrap;">
+                                        <i class="fa fa-phone text-muted me-2"></i>
+                                        @(appointment.Car?.User?.PhoneNumber ?? "N/A")
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <span>
+                                                <i class="fa fa-car text-muted me-2"></i>
+                                                @(appointment.Car?.Make ?? "N/A") @(appointment.Car?.Model ?? "")
+                                            </span>
+                                            <small class="text-muted">@(appointment.Car?.Year.ToString() ?? "") | @(appointment.Car?.PlateNumber ?? "N/A")</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-tools text-muted me-2"></i>
+                                        <span style="font-size: 0.9rem;">@(appointment.Service?.ServiceName ?? "Not specified")</span>
+                                    </td>
+                                    <td style="white-space: nowrap;">
+                                        <i class="fa fa-calendar text-muted me-2"></i>
+                                        @appointment.ScheduleAppointment.ToString("MMM dd, yyyy")
+                                        <br />
+                                        <small class="text-muted">@appointment.ScheduleAppointment.ToString("hh:mm tt")</small>
+                                    </td>
+                                    <td>
+                                        @{
+                                            var statusClass = appointment.Status?.Name switch
+                                            {
+                                                "Pending" => "badge bg-warning text-dark status-badge-uniform",
+                                                "Confirmed" => "badge bg-info status-badge-uniform",
+                                                "In Progress" => "badge bg-primary status-badge-uniform",
+                                                "Completed" => "badge bg-success status-badge-uniform",
+                                                "Cancelled" => "badge bg-danger status-badge-uniform",
+                                                _ => "badge bg-secondary status-badge-uniform"
+                                            };
+                                        }
+                                        <span class="@statusClass">
+                                            @(appointment.Status?.Name ?? "Unknown")
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (appointment.Status?.Name == "Cancelled")
+                                        {
+                                            <div class="d-flex flex-column gap-1">
+                                                <span class="badge bg-secondary py-2" style="font-size: 0.85rem;">
+                                                    <i class="fa fa-lock me-1"></i>Cancelled
+                                                </span>
+                                            </div>
+                                        }
+                                        else if (appointment.Status?.Name == "Completed")
+                                        {
+                                            @if (appointment.Receipt != null)
+                                            {
+                                                <a href="@Url.Action("ViewReceipt", "Employee", new { id = appointment.Receipt.ID })" 
+                                                   class="btn btn-sm btn-info action-btn-uniform w-100 mb-1">
+                                                    <i class="fa fa-receipt me-2"></i>View Receipt
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success py-2">
+                                                    <i class="fa fa-check me-1"></i>Completed
+                                                </span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <div class="btn-group-vertical w-100" role="group" style="min-width: 220px;">
+                                                <!-- Update Status Dropdown -->
+                                                <div class="dropdown mb-1" style="width: 100%;">
+                                                    <button class="btn btn-sm btn-info dropdown-toggle w-100 d-flex align-items-center justify-content-center action-btn-uniform" 
+                                                            type="button" 
+                                                            id="statusDropdown@(appointment.ID)" 
+                                                            data-bs-toggle="dropdown" 
+                                                            aria-expanded="false"
+                                                            style="border-radius: 5px; font-size: 0.85rem; height: 36px; padding: 0.5rem 0.75rem;">
+                                                        <i class="fa fa-edit me-2"></i>
+                                                        <span>Update Status</span>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="statusDropdown@(appointment.ID)" style="min-width: 200px;">
+                                                        <li class="dropdown-header">
+                                                            <i class="fa fa-info-circle me-1"></i>Change Status To:
+                                                        </li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li>
+                                                            <form method="post" asp-action="UpdateAppointmentStatus" asp-controller="Employee" style="display:inline;">
+                                                                @Html.AntiForgeryToken()
+                                                                <input type="hidden" name="id" value="@appointment.ID" />
+                                                                <input type="hidden" name="statusId" value="2" />
+                                                                <button type="submit" class="dropdown-item d-flex align-items-center py-2">
+                                                                    <i class="fa fa-check-circle text-info me-2" style="width: 20px;"></i>
+                                                                    <span>Confirmed</span>
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                        <li>
+                                                            <form method="post" asp-action="UpdateAppointmentStatus" asp-controller="Employee" style="display:inline;">
+                                                                @Html.AntiForgeryToken()
+                                                                <input type="hidden" name="id" value="@appointment.ID" />
+                                                                <input type="hidden" name="statusId" value="3" />
+                                                                <button type="submit" class="dropdown-item d-flex align-items-center py-2">
+                                                                    <i class="fa fa-spinner text-primary me-2" style="width: 20px;"></i>
+                                                                    <span>In Progress</span>
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                                <!-- Create Receipt Button (Only for In Progress status) -->
+                                                @if (appointment.StatusID == 3 && appointment.Receipt == null)
+                                                {
+                                                    <a href="@Url.Action("CreateReceipt", "Employee", new { appointmentId = appointment.ID })" 
+                                                       class="btn btn-sm btn-success d-flex align-items-center justify-content-center action-btn-uniform" 
+                                                       style="border-radius: 5px; font-size: 0.85rem; height: 36px; padding: 0.5rem 0.75rem;">
+                                                        <i class="fa fa-file-invoice me-2"></i>
+                                                        <span>Create Receipt</span>
+                                                    </a>
+                                                }
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (Model == null || !Model.Any())
+            {
+                <div class="alert alert-info text-center mt-4">
+                    <i class="fa fa-info-circle me-2"></i>
+                    No appointments assigned to you yet.
+                </div>
+            }
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <!-- Appointment Statistics -->
+            <div class="row g-4 mt-4">
+                <div class="col-md-3 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="bg-warning text-dark rounded p-4 text-center">
+                        <h3 class="mb-2">@Model.Count(a => a.Status?.Name == "Pending")</h3>
+                        <p class="mb-0"><i class="fa fa-clock me-2"></i>Pending</p>
+                    </div>
+                </div>
+                <div class="col-md-3 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="bg-info text-white rounded p-4 text-center">
+                        <h3 class="text-white mb-2">@Model.Count(a => a.Status?.Name == "Confirmed")</h3>
+                        <p class="mb-0"><i class="fa fa-check-circle me-2"></i>Confirmed</p>
+                    </div>
+                </div>
+                <div class="col-md-3 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="bg-primary text-white rounded p-4 text-center">
+                        <h3 class="text-white mb-2">@Model.Count(a => a.Status?.Name == "In Progress")</h3>
+                        <p class="mb-0"><i class="fa fa-spinner me-2"></i>In Progress</p>
+                    </div>
+                </div>
+                <div class="col-md-3 wow fadeInUp" data-wow-delay="0.4s">
+                    <div class="bg-success text-white rounded p-4 text-center">
+                        <h3 class="text-white mb-2">@Model.Count(a => a.Status?.Name == "Completed")</h3>
+                        <p class="mb-0"><i class="fa fa-check me-2"></i>Completed</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

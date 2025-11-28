@@ -1,0 +1,109 @@
+@model IEnumerable<FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Part>
+
+@{
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+    ViewData["Title"] = "Parts Inventory";
+    ViewData["PageHeader"] = "Parts Inventory";
+    ViewData["PageSubtitle"] = "View Available Parts";
+    ViewData["ActivePage"] = "PartsInventory";
+}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
+            <h1 class="mb-4">Total Parts: <span class="text-primary">@(Model?.Count() ?? 0)</span></h1>
+        </div>
+
+        <div class="bg-light rounded p-4 wow fadeInUp" data-wow-delay="0.3s">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Part Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Stock Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var part in Model)
+                            {
+                                <tr>
+                                    <td><strong>#@part.ID</strong></td>
+                                    <td>
+                                        <i class="fa fa-cog text-primary me-2"></i>
+                                        @part.PartName
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-dollar-sign text-success me-2"></i>
+                                        $@part.Price.ToString("F2")
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-boxes text-muted me-2"></i>
+                                        <strong>@part.Quantity</strong> units
+                                    </td>
+                                    <td>
+                                        @if (part.Stock && part.Quantity > 10)
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="fa fa-check-circle me-1"></i>In Stock
+                                            </span>
+                                        }
+                                        else if (part.Stock && part.Quantity > 0)
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="fa fa-exclamation-triangle me-1"></i>Low Stock
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="fa fa-times-circle me-1"></i>Out of Stock
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (Model == null || !Model.Any())
+            {
+                <div class="alert alert-info text-center mt-4">
+                    <i class="fa fa-info-circle me-2"></i>
+                    No parts available in inventory.
+                </div>
+            }
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <!-- Parts Statistics -->
+            <div class="row g-4 mt-4">
+                <div class="col-md-4 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="bg-success text-white rounded p-4 text-center">
+                        <h3 class="text-white mb-2">@Model.Count(p => p.Stock && p.Quantity > 10)</h3>
+                        <p class="mb-0"><i class="fa fa-check-circle me-2"></i>In Stock</p>
+                    </div>
+                </div>
+                <div class="col-md-4 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="bg-warning text-dark rounded p-4 text-center">
+                        <h3 class="mb-2">@Model.Count(p => p.Stock && p.Quantity > 0 && p.Quantity <= 10)</h3>
+                        <p class="mb-0"><i class="fa fa-exclamation-triangle me-2"></i>Low Stock</p>
+                    </div>
+                </div>
+                <div class="col-md-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="bg-danger text-white rounded p-4 text-center">
+                        <h3 class="text-white mb-2">@Model.Count(p => !p.Stock || p.Quantity == 0)</h3>
+                        <p class="mb-0"><i class="fa fa-times-circle me-2"></i>Out of Stock</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

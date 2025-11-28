@@ -8,8 +8,7 @@
         public string Description { get; set; }
 
         /////////////////////////////////////////////////////////////////////// RELATIONSHIPS ///////////////////////////////////////////////////////////////////////
-        public ICollection<ReceiptService> ReceiptServices = new List<ReceiptService>();
-        public ICollection<PartService> PartServices = new List<PartService>();
-
+        public ICollection<ReceiptService> ReceiptServices { get; set; } = new List<ReceiptService>();
+        public ICollection<PartService> PartServices { get; set; } = new List<PartService>();
     }
 }
