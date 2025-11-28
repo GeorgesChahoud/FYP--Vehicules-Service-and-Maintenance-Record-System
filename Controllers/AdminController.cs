@@ -741,6 +741,8 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                         .ThenInclude(c => c.User)
                     .Include(a => a.Status)
                     .Include(a => a.Service)
+                    .Include(a => a.Employee)
+                        .ThenInclude(e => e.User)
                     .OrderByDescending(a => a.ScheduleAppointment)
                     .ToListAsync();
 
@@ -868,6 +870,74 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "An error occurred while deleting the appointment.";
+                return RedirectToAction("Appointments");
+            }
+        }
+
+        // ASSIGN APPOINTMENT TO EMPLOYEE - GET
+        public async Task<IActionResult> AssignAppointment(int id)
+        {
+            var appointment = await _context.Appointments
+                .Include(a => a.Car)
+                    .ThenInclude(c => c.User)
+                .Include(a => a.Status)
+                .Include(a => a.Service)
+                .Include(a => a.Employee)
+                    .ThenInclude(e => e.User)
+                .FirstOrDefaultAsync(a => a.ID == id);
+
+            if (appointment == null)
+            {
+                TempData["ErrorMessage"] = "Appointment not found.";
+                return RedirectToAction("Appointments");
+            }
+
+            // Get all employees
+            var employees = await _context.Employees
+                .Include(e => e.User)
+                .ToListAsync();
+
+            ViewBag.Employees = employees;
+            return View(appointment);
+        }
+
+        // ASSIGN APPOINTMENT TO EMPLOYEE - POST
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignAppointment(int id, int? employeeId)
+        {
+            try
+            {
+                var appointment = await _context.Appointments.FindAsync(id);
+
+                if (appointment == null)
+                {
+                    TempData["ErrorMessage"] = "Appointment not found.";
+                    return RedirectToAction("Appointments");
+                }
+
+                // Update the employee assignment
+                appointment.EmployeeID = employeeId;
+                await _context.SaveChangesAsync();
+
+                if (employeeId.HasValue)
+                {
+                    var employee = await _context.Employees
+                        .Include(e => e.User)
+                        .FirstOrDefaultAsync(e => e.ID == employeeId.Value);
+                    
+                    TempData["SuccessMessage"] = $"Appointment assigned to {employee?.User?.FirstName} {employee?.User?.LastName} successfully!";
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = "Employee assignment removed from appointment.";
+                }
+
+                return RedirectToAction("Appointments");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while assigning the appointment.";
                 return RedirectToAction("Appointments");
             }
         }

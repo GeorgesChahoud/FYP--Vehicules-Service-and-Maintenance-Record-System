@@ -19,12 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Views\Employee\Calendar.cshtml" />
-    <None Include="Views\Employee\CreateReceipt.cshtml" />
     <None Include="Views\Employee\Index.cshtml" />
-    <None Include="Views\Employee\Inventory.cshtml" />
-    <None Include="Views\Employee\MyAppointments.cshtml" />
-    <None Include="Views\Employee\PrintReceipt.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

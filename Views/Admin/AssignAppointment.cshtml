@@ -1,0 +1,193 @@
+@model FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Appointment
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Assign Appointment";
+    ViewData["PageHeader"] = "Assign Appointment to Employee";
+    ViewData["PageSubtitle"] = "Manage Employee Assignment";
+    ViewData["ActivePage"] = "Appointments";
+    
+    var employees = ViewBag.Employees as List<Employee>;
+    var hasEmployees = employees != null && employees.Any();
+    var employeeCount = hasEmployees ? employees.Count : 0;
+}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Appointment Details Card -->
+            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fa fa-calendar me-2"></i>Appointment Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong><i class="fa fa-hashtag text-primary me-2"></i>Appointment ID:</strong>
+                            <span class="ms-2">#@Model.ID</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fa fa-user text-primary me-2"></i>Customer:</strong>
+                            <span class="ms-2">@Model.Car?.User?.FirstName @Model.Car?.User?.LastName</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fa fa-envelope text-primary me-2"></i>Email:</strong>
+                            <span class="ms-2">@Model.Car?.User?.Email</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fa fa-phone text-primary me-2"></i>Phone:</strong>
+                            <span class="ms-2">@Model.Car?.User?.PhoneNumber</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fa fa-car text-primary me-2"></i>Car:</strong>
+                            <span class="ms-2">@Model.Car?.Year @Model.Car?.Make @Model.Car?.Model</span>
+                            <br />
+                            <small class="text-muted ms-4">Plate Number: @Model.Car?.PlateNumber</small>
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fa fa-tools text-primary me-2"></i>Service:</strong>
+                            <span class="ms-2">@(Model.Service?.ServiceName ?? "Not specified")</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fa fa-calendar text-primary me-2"></i>Scheduled Date:</strong>
+                            <span class="ms-2">@Model.ScheduleAppointment.ToString("MMMM dd, yyyy")</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fa fa-clock text-primary me-2"></i>Scheduled Time:</strong>
+                            <span class="ms-2">@Model.ScheduleAppointment.ToString("hh:mm tt")</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong><i class="fa fa-info-circle text-primary me-2"></i>Status:</strong>
+                            @{
+                                var statusClass = Model.Status?.Name switch
+                                {
+                                    "Pending" => "badge bg-warning text-dark",
+                                    "Confirmed" => "badge bg-info",
+                                    "In Progress" => "badge bg-primary",
+                                    "Completed" => "badge bg-success",
+                                    "Cancelled" => "badge bg-danger",
+                                    _ => "badge bg-secondary"
+                                };
+                            }
+                            <span class="ms-2 @statusClass">@Model.Status?.Name</span>
+                        </div>
+                        @if (Model.Employee != null)
+                        {
+                            <div class="mb-3">
+                                <strong><i class="fa fa-user-check text-success me-2"></i>Currently Assigned To:</strong>
+                                <span class="ms-2 badge bg-success">
+                                    @Model.Employee.User?.FirstName @Model.Employee.User?.LastName
+                                </span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="mb-3">
+                                <strong><i class="fa fa-user-times text-danger me-2"></i>Assignment Status:</strong>
+                                <span class="ms-2 badge bg-secondary">Not Assigned</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assignment Form Card -->
+            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fa fa-user-plus me-2"></i>Assign Employee</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" asp-action="AssignAppointment" asp-controller="Admin">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.ID" />
+
+                            <div class="mb-4">
+                                <label for="employeeId" class="form-label">
+                                    <i class="fa fa-user me-2"></i><strong>Select Employee</strong>
+                                </label>
+                                <select name="employeeId" id="employeeId" class="form-select form-select-lg">
+                                    <option value="">-- No Assignment (Remove) --</option>
+                                    @if (hasEmployees)
+                                    {
+                                        foreach (var employee in employees)
+                                        {
+                                            var isSelected = Model.EmployeeID == employee.ID;
+                                            <option value="@employee.ID" selected="@isSelected">
+                                                @employee.User?.FirstName @employee.User?.LastName 
+                                                - @employee.Shift shift
+                                                (@employee.WorkHours)
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                                <small class="form-text text-muted">
+                                    <i class="fa fa-info-circle me-1"></i>
+                                    Select an employee to assign this appointment, or choose "No Assignment" to remove the current assignment.
+                                </small>
+                            </div>
+
+                            @if (hasEmployees)
+                            {
+                                <div class="alert alert-info">
+                                    <i class="fa fa-users me-2"></i>
+                                    <strong>Available Employees:</strong> @employeeCount
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning">
+                                    <i class="fa fa-exclamation-triangle me-2"></i>
+                                    No employees available. Please create employees first.
+                                </div>
+                            }
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fa fa-check me-2"></i>Assign Employee
+                                </button>
+                                <a href="@Url.Action("Appointments", "Admin")" class="btn btn-secondary btn-lg">
+                                    <i class="fa fa-arrow-left me-2"></i>Back to Appointments
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Employee Information Card -->
+                @if (hasEmployees)
+                {
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0"><i class="fa fa-users me-2"></i>Employee List</h5>
+                        </div>
+                        <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                            <div class="list-group">
+                                @foreach (var employee in employees)
+                                {
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1">
+                                                    <i class="fa fa-user text-primary me-2"></i>
+                                                    @employee.User?.FirstName @employee.User?.LastName
+                                                </h6>
+                                                <small class="text-muted">
+                                                    <i class="fa fa-clock me-1"></i>@employee.Shift shift - @employee.WorkHours
+                                                </small>
+                                            </div>
+                                            @if (Model.EmployeeID == employee.ID)
+                                            {
+                                                <span class="badge bg-success">Currently Assigned</span>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
