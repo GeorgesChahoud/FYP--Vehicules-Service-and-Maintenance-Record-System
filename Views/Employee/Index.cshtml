@@ -1,0 +1,149 @@
+@{
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+    ViewData["Title"] = "Employee Dashboard";
+    ViewData["PageHeader"] = "Employee Dashboard";
+    ViewData["PageSubtitle"] = "Service Management & Overview";
+    ViewData["ActivePage"] = "Dashboard";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="container">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa fa-check-circle me-2"></i>
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+}
+
+<!-- Dashboard Stats Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h1 class="mb-5">Management Dashboard</h1>
+        </div>
+        <div class="row g-4">
+            <!-- Employees Card -->
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="service-item bg-light rounded h-100 p-5 text-center">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 80px; height: 80px;">
+                        <i class="fa fa-users-cog fa-2x text-primary"></i>
+                    </div>
+                    <h4 class="mb-3">Employees</h4>
+                    <h2 class="display-4 text-primary mb-3">@ViewBag.EmployeeCount</h2>
+                    <p class="mb-4">View staff members and technicians</p>
+                    <a class="btn btn-primary py-3 px-5" href="@Url.Action("Employees", "Admin")">
+                        View<i class="fa fa-arrow-right ms-3"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Customers Card -->
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="service-item bg-light rounded h-100 p-5 text-center">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 80px; height: 80px;">
+                        <i class="fa fa-users fa-2x text-primary"></i>
+                    </div>
+                    <h4 class="mb-3">Customers</h4>
+                    <h2 class="display-4 text-primary mb-3">@ViewBag.CustomerCount</h2>
+                    <p class="mb-4">View registered customers and their data</p>
+                    <a class="btn btn-primary py-3 px-5" href="@Url.Action("Customers", "Admin")">
+                        View<i class="fa fa-arrow-right ms-3"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Services Card -->
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="service-item bg-light rounded h-100 p-5 text-center">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 80px; height: 80px;">
+                        <i class="fa fa-tools fa-2x text-primary"></i>
+                    </div>
+                    <h4 class="mb-3">Services</h4>
+                    <h2 class="display-4 text-primary mb-3">@ViewBag.ServiceCount</h2>
+                    <p class="mb-4">View available services offered</p>
+                    <a class="btn btn-primary py-3 px-5" href="@Url.Action("Services", "Admin")">
+                        View<i class="fa fa-arrow-right ms-3"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Parts Card -->
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
+                <div class="service-item bg-light rounded h-100 p-5 text-center">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 80px; height: 80px;">
+                        <i class="fa fa-cogs fa-2x text-primary"></i>
+                    </div>
+                    <h4 class="mb-3">Parts</h4>
+                    <h2 class="display-4 text-primary mb-3">@ViewBag.PartCount</h2>
+                    <p class="mb-4">View parts inventory and stock</p>
+                    <a class="btn btn-primary py-3 px-5" href="@Url.Action("Parts", "Admin")">
+                        View<i class="fa fa-arrow-right ms-3"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row for Appointments -->
+        <div class="row g-4 mt-3">
+            <!-- Appointments Card -->
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.9s">
+                <div class="service-item bg-light rounded h-100 p-5 text-center">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 80px; height: 80px;">
+                        <i class="fa fa-calendar-check fa-2x text-primary"></i>
+                    </div>
+                    <h4 class="mb-3">Appointments</h4>
+                    <h2 class="display-4 text-primary mb-3">@ViewBag.AppointmentCount</h2>
+                    <p class="mb-4">View and manage customer appointments</p>
+                    <a class="btn btn-primary py-3 px-5" href="@Url.Action("Appointments", "Admin")">
+                        View<i class="fa fa-arrow-right ms-3"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Dashboard Stats End -->
+
+<!-- Quick Actions Section -->
+<div class="container-xxl py-5 bg-light">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h1 class="mb-5">Quick Access</h1>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="d-flex py-5 px-4 bg-white rounded">
+                    <i class="fa fa-users-cog fa-3x text-primary flex-shrink-0"></i>
+                    <div class="ps-4">
+                        <h5 class="mb-3">View Employees</h5>
+                        <p>Check staff members and their information</p>
+                        <a class="text-secondary border-bottom" href="@Url.Action("Employees", "Admin")">View Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="d-flex py-5 px-4 bg-white rounded">
+                    <i class="fa fa-tools fa-3x text-primary flex-shrink-0"></i>
+                    <div class="ps-4">
+                        <h5 class="mb-3">View Services</h5>
+                        <p>Browse available services for customers</p>
+                        <a class="text-secondary border-bottom" href="@Url.Action("Services", "Admin")">View Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="d-flex py-5 px-4 bg-white rounded">
+                    <i class="fa fa-cogs fa-3x text-primary flex-shrink-0"></i>
+                    <div class="ps-4">
+                        <h5 class="mb-3">View Parts</h5>
+                        <p>Check parts inventory and availability</p>
+                        <a class="text-secondary border-bottom" href="@Url.Action("Parts", "Admin")">View Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Quick Actions End -->

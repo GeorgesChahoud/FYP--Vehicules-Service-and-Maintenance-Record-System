@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -9,17 +9,22 @@
 
   <ItemGroup>
     <Compile Remove="Views\Customer\**" />
-    <Compile Remove="Views\Employee\**" />
     <Compile Remove="Views\MainMenu\**" />
     <Content Remove="Views\Customer\**" />
-    <Content Remove="Views\Employee\**" />
     <Content Remove="Views\MainMenu\**" />
     <EmbeddedResource Remove="Views\Customer\**" />
-    <EmbeddedResource Remove="Views\Employee\**" />
     <EmbeddedResource Remove="Views\MainMenu\**" />
     <None Remove="Views\Customer\**" />
-    <None Remove="Views\Employee\**" />
     <None Remove="Views\MainMenu\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Employee\Calendar.cshtml" />
+    <None Include="Views\Employee\CreateReceipt.cshtml" />
+    <None Include="Views\Employee\Index.cshtml" />
+    <None Include="Views\Employee\Inventory.cshtml" />
+    <None Include="Views\Employee\MyAppointments.cshtml" />
+    <None Include="Views\Employee\PrintReceipt.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿using FYP___Vehicules_Service_and_Maintenance_Record_System.Data;
+using FYP___Vehicules_Service_and_Maintenance_Record_System.Data;
 using FYP___Vehicules_Service_and_Maintenance_Record_System.Models;
 using FYP___Vehicules_Service_and_Maintenance_Record_System.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -553,12 +553,13 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
-                
+                // Encrypt the email before searching (employee emails are stored encrypted)
+                var encryptedEmail = _encryptionService.Encrypt(Email);
 
                 var user = await _context.Users
                     .Include(u => u.Role)
                     .Include(u => u.Employee)
-                    .FirstOrDefaultAsync(u => u.Email == Email && u.RoleID == 2);
+                    .FirstOrDefaultAsync(u => u.Email == encryptedEmail && u.RoleID == 2);
 
                 if (user == null)
                 {
@@ -648,10 +649,25 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
         // Helper method to sign in user
         private async Task SignInUser(User user, bool rememberMe)
         {
+            // Decrypt email if it's encrypted (for employees)
+            string displayEmail = user.Email;
+            if (user.RoleID == 2) // Employee role
+            {
+                try
+                {
+                    displayEmail = _encryptionService.Decrypt(user.Email);
+                }
+                catch (Exception)
+                {
+                    // If decryption fails, use encrypted email
+                    displayEmail = user.Email;
+                }
+            }
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Email, displayEmail),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(ClaimTypes.GivenName, user.FirstName),
                 new Claim(ClaimTypes.Surname, user.LastName),

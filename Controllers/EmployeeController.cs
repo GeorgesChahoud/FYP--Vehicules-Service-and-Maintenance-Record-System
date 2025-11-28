@@ -14,6 +14,24 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
             _context = context;
         }
 
+        // DASHBOARD
+        public async Task<IActionResult> Index()
+        {
+            var employeeCount = await _context.Employees.CountAsync();
+            var customerCount = await _context.Customers.CountAsync();
+            var serviceCount = await _context.Services.CountAsync();
+            var partCount = await _context.Parts.CountAsync();
+            var appointmentCount = await _context.Appointments.CountAsync();
+
+            ViewBag.EmployeeCount = employeeCount;
+            ViewBag.CustomerCount = customerCount;
+            ViewBag.ServiceCount = serviceCount;
+            ViewBag.PartCount = partCount;
+            ViewBag.AppointmentCount = appointmentCount;
+
+            return View();
+        }
+
         // CREATE: Show Form
         public IActionResult Create()
         {
@@ -68,12 +86,6 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
             _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
-        }
-
-        public async Task<IActionResult> Index()
-        {
-            var employees = await _context.Employees.ToListAsync();
-            return View(employees);
         }
     }
 }
