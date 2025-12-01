@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
 {
     /// <inheritdoc />
-    public partial class AllOnNewDB : Migration
+    public partial class newmigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -396,6 +396,8 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CarID = table.Column<int>(type: "int", nullable: false),
                     StatusID = table.Column<int>(type: "int", nullable: false),
+                    ServiceID = table.Column<int>(type: "int", nullable: true),
+                    EmployeeID = table.Column<int>(type: "int", nullable: true),
                     ScheduleAppointment = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -407,6 +409,16 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                         principalTable: "Cars",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Appointments_Employees_EmployeeID",
+                        column: x => x.EmployeeID,
+                        principalTable: "Employees",
+                        principalColumn: "ID");
+                    table.ForeignKey(
+                        name: "FK_Appointments_Services_ServiceID",
+                        column: x => x.ServiceID,
+                        principalTable: "Services",
+                        principalColumn: "ID");
                     table.ForeignKey(
                         name: "FK_Appointments_Status_StatusID",
                         column: x => x.StatusID,
@@ -432,6 +444,34 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                         name: "FK_Receipts_Appointments_AppointmentID",
                         column: x => x.AppointmentID,
                         principalTable: "Appointments",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReceiptParts",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ReceiptID = table.Column<int>(type: "int", nullable: false),
+                    PartID = table.Column<int>(type: "int", nullable: false),
+                    QuantityUsed = table.Column<int>(type: "int", nullable: false),
+                    PriceAtTime = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReceiptParts", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_ReceiptParts_Parts_PartID",
+                        column: x => x.PartID,
+                        principalTable: "Parts",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReceiptParts_Receipts_ReceiptID",
+                        column: x => x.ReceiptID,
+                        principalTable: "Receipts",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -518,6 +558,16 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                 column: "CarID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Appointments_EmployeeID",
+                table: "Appointments",
+                column: "EmployeeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_ServiceID",
+                table: "Appointments",
+                column: "ServiceID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Appointments_StatusID",
                 table: "Appointments",
                 column: "StatusID");
@@ -589,6 +639,16 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                 column: "ServiceID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ReceiptParts_PartID",
+                table: "ReceiptParts",
+                column: "PartID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReceiptParts_ReceiptID",
+                table: "ReceiptParts",
+                column: "ReceiptID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Receipts_AppointmentID",
                 table: "Receipts",
                 column: "AppointmentID",
@@ -635,13 +695,13 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                 name: "Customers");
 
             migrationBuilder.DropTable(
-                name: "Employees");
-
-            migrationBuilder.DropTable(
                 name: "PartServices");
 
             migrationBuilder.DropTable(
                 name: "PasswordResets");
+
+            migrationBuilder.DropTable(
+                name: "ReceiptParts");
 
             migrationBuilder.DropTable(
                 name: "ReceiptServices");
@@ -662,13 +722,16 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                 name: "Receipts");
 
             migrationBuilder.DropTable(
-                name: "Services");
-
-            migrationBuilder.DropTable(
                 name: "Appointments");
 
             migrationBuilder.DropTable(
                 name: "Cars");
+
+            migrationBuilder.DropTable(
+                name: "Employees");
+
+            migrationBuilder.DropTable(
+                name: "Services");
 
             migrationBuilder.DropTable(
                 name: "Status");

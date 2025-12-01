@@ -292,6 +292,35 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.ToTable("Receipts");
                 });
 
+            modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.ReceiptPart", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("PartID")
+                        .HasColumnType("int");
+
+                    b.Property<double>("PriceAtTime")
+                        .HasColumnType("float");
+
+                    b.Property<int>("QuantityUsed")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReceiptID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("PartID");
+
+                    b.HasIndex("ReceiptID");
+
+                    b.ToTable("ReceiptParts");
+                });
+
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.ReceiptService", b =>
                 {
                     b.Property<int>("ID")
@@ -313,35 +342,6 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.HasIndex("ServiceID");
 
                     b.ToTable("ReceiptServices");
-                });
-
-            modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.ReceiptPart", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<int>("ReceiptID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PartID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuantityUsed")
-                        .HasColumnType("int");
-
-                    b.Property<double>("PriceAtTime")
-                        .HasColumnType("float");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("ReceiptID");
-
-                    b.HasIndex("PartID");
-
-                    b.ToTable("ReceiptParts");
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.RegistrationVerification", b =>
@@ -849,13 +849,13 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.PartService", b =>
                 {
                     b.HasOne("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Part", "Part")
-                        .WithMany()
+                        .WithMany("PartServices")
                         .HasForeignKey("PartID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Service", "Service")
-                        .WithMany()
+                        .WithMany("PartServices")
                         .HasForeignKey("ServiceID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -876,16 +876,35 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.Navigation("Appointment");
                 });
 
+            modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.ReceiptPart", b =>
+                {
+                    b.HasOne("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Part", "Part")
+                        .WithMany("ReceiptParts")
+                        .HasForeignKey("PartID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Receipt", "Receipt")
+                        .WithMany("ReceiptParts")
+                        .HasForeignKey("ReceiptID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Part");
+
+                    b.Navigation("Receipt");
+                });
+
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.ReceiptService", b =>
                 {
                     b.HasOne("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Receipt", "Receipt")
-                        .WithMany()
+                        .WithMany("ReceiptServices")
                         .HasForeignKey("ReceiptID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Service", "Service")
-                        .WithMany()
+                        .WithMany("ReceiptServices")
                         .HasForeignKey("ServiceID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -893,25 +912,6 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.Navigation("Receipt");
 
                     b.Navigation("Service");
-                });
-
-            modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.ReceiptPart", b =>
-                {
-                    b.HasOne("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Receipt", "Receipt")
-                        .WithMany()
-                        .HasForeignKey("ReceiptID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Part", "Part")
-                        .WithMany()
-                        .HasForeignKey("PartID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Receipt");
-
-                    b.Navigation("Part");
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.User", b =>
@@ -992,9 +992,30 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Migrations
                     b.Navigation("Appointments");
                 });
 
+            modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Part", b =>
+                {
+                    b.Navigation("PartServices");
+
+                    b.Navigation("ReceiptParts");
+                });
+
+            modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Receipt", b =>
+                {
+                    b.Navigation("ReceiptParts");
+
+                    b.Navigation("ReceiptServices");
+                });
+
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Role", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Service", b =>
+                {
+                    b.Navigation("PartServices");
+
+                    b.Navigation("ReceiptServices");
                 });
 
             modelBuilder.Entity("FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Status", b =>
