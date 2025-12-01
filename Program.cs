@@ -40,6 +40,27 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var app = builder.Build();
 
+// Auto-apply pending migrations on startup
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        
+        logger.LogInformation("?? Checking for pending database migrations...");
+        context.Database.Migrate(); // This will apply all pending migrations automatically
+        logger.LogInformation("? Database migrations applied successfully!");
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "? An error occurred while migrating the database.");
+        // Log the error but don't throw - allow app to start for troubleshooting
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
