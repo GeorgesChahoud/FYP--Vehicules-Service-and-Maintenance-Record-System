@@ -15,19 +15,22 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
         private readonly IEncryptionService _encryptionService;
         private readonly IEmailService _emailService;
         private readonly ILogger<AdminController> _logger;
+        private readonly IPasswordValidator _passwordValidator;
 
         public AdminController(
             ApplicationDbContext context,
             IPasswordHasher passwordHasher,
             IEncryptionService encryptionService,
             IEmailService emailService,
-            ILogger<AdminController> logger)
+            ILogger<AdminController> logger,
+            IPasswordValidator passwordValidator)
         {
             _context = context;
             _passwordHasher = passwordHasher;
             _encryptionService = encryptionService;
             _emailService = emailService;
             _logger = logger;
+            _passwordValidator = passwordValidator;
         }
 
         // DASHBOARD
@@ -114,6 +117,14 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 string.IsNullOrEmpty(WorkHours))
             {
                 ViewBag.ErrorMessage = "All fields are required.";
+                return View();
+            }
+
+            // Validate password complexity
+            var passwordValidation = _passwordValidator.ValidatePassword(Password);
+            if (!passwordValidation.isValid)
+            {
+                ViewBag.ErrorMessage = passwordValidation.errorMessage;
                 return View();
             }
 
@@ -211,6 +222,21 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
+                // Update password only if provided
+                if (!string.IsNullOrEmpty(Password))
+                {
+                    // Validate password complexity
+                    var passwordValidation = _passwordValidator.ValidatePassword(Password);
+                    if (!passwordValidation.isValid)
+                    {
+                        ViewBag.ErrorMessage = passwordValidation.errorMessage;
+                        employee.User.Email = _encryptionService.Decrypt(employee.User.Email);
+                        return View(employee);
+                    }
+
+                    employee.User.Password = _passwordHasher.HashPassword(Password);
+                }
+
                 var encryptedEmail = _encryptionService.Encrypt(Email);
 
                 // Check if email is being changed and if new email already exists
@@ -232,12 +258,6 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 employee.User.LastName = LastName;
                 employee.User.Email = encryptedEmail;
                 employee.User.PhoneNumber = PhoneNumber;
-
-                // Update password only if provided
-                if (!string.IsNullOrEmpty(Password))
-                {
-                    employee.User.Password = _passwordHasher.HashPassword(Password);
-                }
 
                 // Update Employee
                 employee.Shift = Shift;
@@ -561,6 +581,14 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 return View();
             }
 
+            // Validate password complexity
+            var passwordValidation = _passwordValidator.ValidatePassword(Password);
+            if (!passwordValidation.isValid)
+            {
+                ViewBag.ErrorMessage = passwordValidation.errorMessage;
+                return View();
+            }
+
             try
             {
                 // Customer emails are stored as plain text (not encrypted)
@@ -648,6 +676,20 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
+                // Update password only if provided
+                if (!string.IsNullOrEmpty(Password))
+                {
+                    // Validate password complexity
+                    var passwordValidation = _passwordValidator.ValidatePassword(Password);
+                    if (!passwordValidation.isValid)
+                    {
+                        ViewBag.ErrorMessage = passwordValidation.errorMessage;
+                        return View(customer);
+                    }
+
+                    customer.User.Password = _passwordHasher.HashPassword(Password);
+                }
+
                 // Customer emails are stored as plain text (not encrypted)
                 // Check if email is being changed and if new email already exists
                 if (customer.User.Email != Email)
@@ -667,12 +709,6 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 customer.User.LastName = LastName;
                 customer.User.Email = Email;  // Store as plain text
                 customer.User.PhoneNumber = PhoneNumber;
-
-                // Update password only if provided
-                if (!string.IsNullOrEmpty(Password))
-                {
-                    customer.User.Password = _passwordHasher.HashPassword(Password);
-                }
 
                 // Update Customer
                 customer.Address = Address;
@@ -732,11 +768,12 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
         #region APPOINTMENT MANAGEMENT
 
         // LIST ALL APPOINTMENTS
-        public async Task<IActionResult> Appointments()
+        public async Task<IActionResult> Appointments(string status = "All")
         {
             try
             {
-                var appointments = await _context.Appointments
+                // Get all appointments first
+                var allAppointments = await _context.Appointments
                     .Include(a => a.Car)
                         .ThenInclude(c => c.User)
                     .Include(a => a.Status)
@@ -746,13 +783,24 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                     .OrderByDescending(a => a.ScheduleAppointment)
                     .ToListAsync();
 
+                // Apply filter based on status for display
+                var filteredAppointments = allAppointments;
+                if (status != "All" && !string.IsNullOrEmpty(status))
+                {
+                    filteredAppointments = allAppointments.Where(a => a.Status?.Name == status).ToList();
+                }
+
+                ViewBag.FilterStatus = status;
+                ViewBag.AllAppointments = allAppointments; // Pass all appointments for accurate counts
+
                 // Customer emails are stored as plain text (not encrypted)
                 // No need to decrypt them
-                return View(appointments ?? new List<Appointment>());
+                return View(filteredAppointments ?? new List<Appointment>());
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = $"Error loading appointments: {ex.Message}";
+                ViewBag.AllAppointments = new List<Appointment>();
                 return View(new List<Appointment>());
             }
         }
@@ -782,6 +830,14 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 {
                     _logger.LogWarning($"Attempted to modify cancelled appointment {id}");
                     TempData["ErrorMessage"] = "⚠️ Cannot modify a cancelled appointment. Cancelled appointments are locked and cannot be updated.";
+                    return RedirectToAction("Appointments");
+                }
+
+                // Check if appointment is already completed - prevent any status changes
+                if (appointment.Status?.Name == "Completed")
+                {
+                    _logger.LogWarning($"Attempted to modify completed appointment {id}");
+                    TempData["ErrorMessage"] = "⚠️ Cannot modify a completed appointment. Completed appointments are locked and cannot be updated.";
                     return RedirectToAction("Appointments");
                 }
 

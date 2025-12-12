@@ -96,7 +96,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
         }
 
         // MY APPOINTMENTS - List of appointments assigned to this employee
-        public async Task<IActionResult> MyAppointments()
+        public async Task<IActionResult> MyAppointments(string status = "All")
         {
             var employeeId = await GetCurrentEmployeeIdAsync();
             if (employeeId == null)
@@ -104,7 +104,8 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            var appointments = await _context.Appointments
+            // Get all appointments for this employee first
+            var allAppointments = await _context.Appointments
                 .Where(a => a.EmployeeID == employeeId)
                 .Include(a => a.Car)
                     .ThenInclude(c => c.User)
@@ -114,7 +115,17 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 .OrderByDescending(a => a.ScheduleAppointment)
                 .ToListAsync();
 
-            return View(appointments);
+            // Apply filter based on status for display
+            var filteredAppointments = allAppointments;
+            if (status != "All" && !string.IsNullOrEmpty(status))
+            {
+                filteredAppointments = allAppointments.Where(a => a.Status?.Name == status).ToList();
+            }
+
+            ViewBag.FilterStatus = status;
+            ViewBag.AllAppointments = allAppointments; // Pass all appointments for accurate counts
+
+            return View(filteredAppointments);
         }
 
         // UPDATE APPOINTMENT STATUS
@@ -129,11 +140,26 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
             }
 
             var appointment = await _context.Appointments
+                .Include(a => a.Status)
                 .FirstOrDefaultAsync(a => a.ID == id && a.EmployeeID == employeeId);
 
             if (appointment == null)
             {
                 TempData["ErrorMessage"] = "Appointment not found or not assigned to you.";
+                return RedirectToAction("MyAppointments");
+            }
+
+            // Check if appointment is already cancelled - prevent any status changes
+            if (appointment.Status?.Name == "Cancelled")
+            {
+                TempData["ErrorMessage"] = "⚠️ Cannot modify a cancelled appointment. Cancelled appointments are locked and cannot be updated.";
+                return RedirectToAction("MyAppointments");
+            }
+
+            // Check if appointment is already completed - prevent any status changes
+            if (appointment.Status?.Name == "Completed")
+            {
+                TempData["ErrorMessage"] = "⚠️ Cannot modify a completed appointment. Completed appointments are locked and cannot be updated.";
                 return RedirectToAction("MyAppointments");
             }
 

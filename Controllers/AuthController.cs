@@ -20,18 +20,22 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
         private readonly IEncryptionService _encryptionService;
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
+        private readonly IPasswordValidator _passwordValidator;
+
         public AuthController(
             ApplicationDbContext context,
             IPasswordHasher passwordHasher,
             IEncryptionService encryptionService,
             IEmailService emailService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IPasswordValidator passwordValidator)
         {
             _context = context;
             _passwordHasher = passwordHasher;
             _encryptionService = encryptionService;
             _emailService = emailService;
             _configuration = configuration;
+            _passwordValidator = passwordValidator;
         }
 
         // GET: Auth/SelectRole (Main Menu)
@@ -199,9 +203,11 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 return View("~/Views/Auth/ResetPassword.cshtml");
             }
 
-            if (NewPassword.Length < 6)
+            // Validate password complexity
+            var passwordValidation = _passwordValidator.ValidatePassword(NewPassword);
+            if (!passwordValidation.isValid)
             {
-                ViewBag.ErrorMessage = "Password must be at least 6 characters long.";
+                ViewBag.ErrorMessage = passwordValidation.errorMessage;
                 ViewBag.Email = Email;
                 return View("~/Views/Auth/ResetPassword.cshtml");
             }
@@ -311,9 +317,11 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                 return View("~/Views/Auth/CustomerRegister.cshtml");
             }
 
-            if (Password.Length < 6)
+            // Validate password complexity
+            var passwordValidation = _passwordValidator.ValidatePassword(Password);
+            if (!passwordValidation.isValid)
             {
-                ViewBag.ErrorMessage = "Password must be at least 6 characters long.";
+                ViewBag.ErrorMessage = passwordValidation.errorMessage;
                 return View("~/Views/Auth/CustomerRegister.cshtml");
             }
 
@@ -481,8 +489,6 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
-                
-
                 // Find the latest registration verification
                 var verificationRecord = await _context.RegistrationVerifications
                     .Where(r => r.Email == Email && !r.IsVerified)
@@ -511,7 +517,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
                     await _emailService.SendRegistrationOtpEmailAsync(
                         Email,
                         $"{verificationRecord.FirstName} {verificationRecord.LastName}",
-                        newOtpCode  // Use newOtpCode instead of otpCode
+                        newOtpCode
                     );
                 }
                 catch (Exception emailEx)
@@ -702,7 +708,6 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
             try
             {
-                
 
                 var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.Email == Email && u.RoleID == 3);
@@ -761,7 +766,7 @@ namespace FYP___Vehicules_Service_and_Maintenance_Record_System.Controllers
 
     public class GoogleReCaptchaResponse
     {
-        public bool success {  get; set; }
+        public bool success { get; set; }
         public List<string> error_codes { get; set; }
     }
 }

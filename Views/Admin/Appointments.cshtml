@@ -6,6 +6,9 @@
     ViewData["PageHeader"] = "Customer Appointments";
     ViewData["PageSubtitle"] = "Appointments Database Overview";
     ViewData["ActivePage"] = "Appointments";
+    
+    var filterStatus = ViewBag.FilterStatus as string ?? "All";
+    var allAppointments = ViewBag.AllAppointments as List<FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Appointment> ?? Model?.ToList() ?? new List<FYP___Vehicules_Service_and_Maintenance_Record_System.Models.Appointment>();
 }
 
 <div class="container-xxl py-5">
@@ -28,25 +31,52 @@
             </div>
         }
 
-        <div class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="text-center mb-4 wow fadeInUp" data-wow-delay="0.1s">
             <h1 class="mb-4">Total Appointments: <span class="text-primary">@(Model?.Count() ?? 0)</span></h1>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="bg-light rounded p-4 mb-4 wow fadeInUp" data-wow-delay="0.2s">
+            <div class="d-flex justify-content-center align-items-center flex-wrap gap-2">
+                <span class="me-2 fw-bold"><i class="fa fa-filter me-2"></i>Filter by Status:</span>
+                <a href="@Url.Action("Appointments", "Admin", new { status = "All" })" 
+                   class="btn btn-sm @(filterStatus == "All" ? "btn-primary" : "btn-outline-primary")">
+                    <i class="fa fa-list me-1"></i>All (@(allAppointments.Count))
+                </a>
+                <a href="@Url.Action("Appointments", "Admin", new { status = "Pending" })" 
+                   class="btn btn-sm @(filterStatus == "Pending" ? "btn-warning text-dark" : "btn-outline-warning")">
+                    <i class="fa fa-clock me-1"></i>Pending (@(allAppointments.Count(a => a.Status?.Name == "Pending")))
+                </a>
+                <a href="@Url.Action("Appointments", "Admin", new { status = "Confirmed" })" 
+                   class="btn btn-sm @(filterStatus == "Confirmed" ? "btn-info text-white" : "btn-outline-info")">
+                    <i class="fa fa-check-circle me-1"></i>Confirmed (@(allAppointments.Count(a => a.Status?.Name == "Confirmed")))
+                </a>
+                <a href="@Url.Action("Appointments", "Admin", new { status = "In Progress" })" 
+                   class="btn btn-sm @(filterStatus == "In Progress" ? "btn-primary" : "btn-outline-primary")">
+                    <i class="fa fa-spinner me-1"></i>In Progress (@(allAppointments.Count(a => a.Status?.Name == "In Progress")))
+                </a>
+                <a href="@Url.Action("Appointments", "Admin", new { status = "Completed" })" 
+                   class="btn btn-sm @(filterStatus == "Completed" ? "btn-success text-white" : "btn-outline-success")">
+                    <i class="fa fa-check me-1"></i>Completed (@(allAppointments.Count(a => a.Status?.Name == "Completed")))
+                </a>
+                <a href="@Url.Action("Appointments", "Admin", new { status = "Cancelled" })" 
+                   class="btn btn-sm @(filterStatus == "Cancelled" ? "btn-danger text-white" : "btn-outline-danger")">
+                    <i class="fa fa-times me-1"></i>Cancelled (@(allAppointments.Count(a => a.Status?.Name == "Cancelled")))
+                </a>
+            </div>
         </div>
 
         <div class="bg-light rounded p-4 wow fadeInUp" data-wow-delay="0.3s">
             <div class="table-responsive">
-                <table class="table table-striped table-hover align-middle" style="min-width: 1800px;">
+                <table class="table table-striped table-hover align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th style="width: 60px;">ID</th>
-                            <th style="width: 150px;">Customer</th>
-                            <th style="width: 200px;">Email</th>
-                            <th style="width: 130px;">Phone</th>
-                            <th style="width: 200px;">Car</th>
-                            <th style="width: 160px;">Service</th>
-                            <th style="width: 140px;">Date & Time</th>
+                            <th style="width: 80px;">ID</th>
+                            <th style="width: 180px;">Customer</th>
                             <th style="width: 120px;">Status</th>
-                            <th style="width: 150px;">Assigned To</th>
-                            <th class="text-center" style="width: 230px;">Actions</th>
+                            <th style="width: 180px;">Assigned To</th>
+                            <th class="text-center" style="width: 150px;">Info</th>
+                            <th class="text-center" style="width: 250px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,33 +89,6 @@
                                     <td style="white-space: nowrap;">
                                         <i class="fa fa-user text-primary me-2"></i>
                                         @(appointment.Car?.User?.FirstName ?? "N/A") @(appointment.Car?.User?.LastName ?? "")
-                                    </td>
-                                    <td style="word-break: break-word;">
-                                        <i class="fa fa-envelope text-muted me-2"></i>
-                                        <small>@(appointment.Car?.User?.Email ?? "N/A")</small>
-                                    </td>
-                                    <td style="white-space: nowrap;">
-                                        <i class="fa fa-phone text-muted me-2"></i>
-                                        @(appointment.Car?.User?.PhoneNumber ?? "N/A")
-                                    </td>
-                                    <td>
-                                        <div class="d-flex flex-column">
-                                            <span>
-                                                <i class="fa fa-car text-muted me-2"></i>
-                                                @(appointment.Car?.Make ?? "N/A") @(appointment.Car?.Model ?? "")
-                                            </span>
-                                            <small class="text-muted">@(appointment.Car?.Year.ToString() ?? "") | @(appointment.Car?.PlateNumber ?? "N/A")</small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <i class="fa fa-tools text-muted me-2"></i>
-                                        <span style="font-size: 0.9rem;">@(appointment.Service?.ServiceName ?? "Not specified")</span>
-                                    </td>
-                                    <td style="white-space: nowrap;">
-                                        <i class="fa fa-calendar text-muted me-2"></i>
-                                        @appointment.ScheduleAppointment.ToString("MMM dd, yyyy")
-                                        <br />
-                                        <small class="text-muted">@appointment.ScheduleAppointment.ToString("hh:mm tt")</small>
                                     </td>
                                     <td>
                                         @{
@@ -119,12 +122,29 @@
                                         }
                                     </td>
                                     <td class="text-center">
+                                        <button type="button" 
+                                                class="btn btn-sm btn-primary" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#appointmentModal@(appointment.ID)">
+                                            <i class="fa fa-info-circle me-1"></i>View Info
+                                        </button>
+                                    </td>
+                                    <td class="text-center">
                                         @if (appointment.Status?.Name == "Cancelled")
                                         {
                                             <!-- Cancelled appointments cannot be modified -->
                                             <div class="d-flex flex-column gap-1">
                                                 <span class="badge bg-secondary py-2" style="font-size: 0.85rem;">
                                                     <i class="fa fa-lock me-1"></i>LOCKED - Cannot Modify
+                                                </span>
+                                            </div>
+                                        }
+                                        else if (appointment.Status?.Name == "Completed")
+                                        {
+                                            <!-- Completed appointments cannot be modified -->
+                                            <div class="d-flex flex-column gap-1">
+                                                <span class="badge bg-success py-2" style="font-size: 0.85rem;">
+                                                    <i class="fa fa-lock me-1"></i>COMPLETED - Cannot Modify
                                                 </span>
                                             </div>
                                         }
@@ -230,6 +250,87 @@
                                         }
                                     </td>
                                 </tr>
+
+                                <!-- Appointment Info Modal -->
+                                <div class="modal fade" id="appointmentModal@(appointment.ID)" tabindex="-1" aria-labelledby="appointmentModalLabel@(appointment.ID)" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-primary text-white">
+                                                <h5 class="modal-title" id="appointmentModalLabel@(appointment.ID)">
+                                                    <i class="fa fa-calendar me-2"></i>Appointment #@appointment.ID Details
+                                                </h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row g-3">
+                                                    <!-- Customer Information -->
+                                                    <div class="col-12">
+                                                        <h6 class="text-primary border-bottom pb-2 mb-3">
+                                                            <i class="fa fa-user me-2"></i>Customer Information
+                                                        </h6>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <strong><i class="fa fa-user text-muted me-2"></i>Name:</strong>
+                                                        <p class="mb-0">@(appointment.Car?.User?.FirstName ?? "N/A") @(appointment.Car?.User?.LastName ?? "")</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <strong><i class="fa fa-envelope text-muted me-2"></i>Email:</strong>
+                                                        <p class="mb-0">@(appointment.Car?.User?.Email ?? "N/A")</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <strong><i class="fa fa-phone text-muted me-2"></i>Phone:</strong>
+                                                        <p class="mb-0">@(appointment.Car?.User?.PhoneNumber ?? "N/A")</p>
+                                                    </div>
+
+                                                    <!-- Vehicle Information -->
+                                                    <div class="col-12 mt-4">
+                                                        <h6 class="text-primary border-bottom pb-2 mb-3">
+                                                            <i class="fa fa-car me-2"></i>Vehicle Information
+                                                        </h6>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <strong><i class="fa fa-car text-muted me-2"></i>Make & Model:</strong>
+                                                        <p class="mb-0">@(appointment.Car?.Year.ToString() ?? "") @(appointment.Car?.Make ?? "N/A") @(appointment.Car?.Model ?? "")</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <strong><i class="fa fa-id-card text-muted me-2"></i>Plate Number:</strong>
+                                                        <p class="mb-0">@(appointment.Car?.PlateNumber ?? "N/A")</p>
+                                                    </div>
+
+                                                    <!-- Appointment Details -->
+                                                    <div class="col-12 mt-4">
+                                                        <h6 class="text-primary border-bottom pb-2 mb-3">
+                                                            <i class="fa fa-calendar-check me-2"></i>Appointment Details
+                                                        </h6>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <strong><i class="fa fa-tools text-muted me-2"></i>Service:</strong>
+                                                        <p class="mb-0">@(appointment.Service?.ServiceName ?? "Not specified")</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <strong><i class="fa fa-calendar text-muted me-2"></i>Date:</strong>
+                                                        <p class="mb-0">@appointment.ScheduleAppointment.ToString("MMMM dd, yyyy")</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <strong><i class="fa fa-clock text-muted me-2"></i>Time:</strong>
+                                                        <p class="mb-0">@appointment.ScheduleAppointment.ToString("hh:mm tt")</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <strong><i class="fa fa-info-circle text-muted me-2"></i>Status:</strong>
+                                                        <p class="mb-0">
+                                                            <span class="@statusClass">@(appointment.Status?.Name ?? "Unknown")</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    <i class="fa fa-times me-1"></i>Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             }
                         }
                     </tbody>
@@ -240,7 +341,14 @@
             {
                 <div class="alert alert-info text-center mt-4">
                     <i class="fa fa-info-circle me-2"></i>
-                    No appointments scheduled yet. Customers can create appointments through their dashboard.
+                    @if (filterStatus != "All")
+                    {
+                        <text>No appointments found with status: <strong>@filterStatus</strong>. Try selecting a different filter.</text>
+                    }
+                    else
+                    {
+                        <text>No appointments scheduled yet. Customers can create appointments through their dashboard.</text>
+                    }
                 </div>
             }
         </div>
@@ -251,37 +359,37 @@
             <div class="row g-4 mt-4">
                 <div class="col-md-2 wow fadeInUp" data-wow-delay="0.1s">
                     <div class="bg-warning text-dark rounded p-4 text-center">
-                        <h3 class="mb-2">@Model.Count(a => a.Status?.Name == "Pending")</h3>
+                        <h3 class="mb-2">@allAppointments.Count(a => a.Status?.Name == "Pending")</h3>
                         <p class="mb-0"><i class="fa fa-clock me-2"></i>Pending</p>
                     </div>
                 </div>
                 <div class="col-md-2 wow fadeInUp" data-wow-delay="0.2s">
                     <div class="bg-info text-white rounded p-4 text-center">
-                        <h3 class="text-white mb-2">@Model.Count(a => a.Status?.Name == "Confirmed")</h3>
+                        <h3 class="text-white mb-2">@allAppointments.Count(a => a.Status?.Name == "Confirmed")</h3>
                         <p class="mb-0"><i class="fa fa-check-circle me-2"></i>Confirmed</p>
                     </div>
                 </div>
                 <div class="col-md-2 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="bg-primary text-white rounded p-4 text-center">
-                        <h3 class="text-white mb-2">@Model.Count(a => a.Status?.Name == "In Progress")</h3>
+                        <h3 class="text-white mb-2">@allAppointments.Count(a => a.Status?.Name == "In Progress")</h3>
                         <p class="mb-0"><i class="fa fa-spinner me-2"></i>In Progress</p>
                     </div>
                 </div>
                 <div class="col-md-2 wow fadeInUp" data-wow-delay="0.4s">
                     <div class="bg-success text-white rounded p-4 text-center">
-                        <h3 class="text-white mb-2">@Model.Count(a => a.Status?.Name == "Completed")</h3>
+                        <h3 class="text-white mb-2">@allAppointments.Count(a => a.Status?.Name == "Completed")</h3>
                         <p class="mb-0"><i class="fa fa-check me-2"></i>Completed</p>
                     </div>
                 </div>
                 <div class="col-md-2 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="bg-danger text-white rounded p-4 text-center">
-                        <h3 class="text-white mb-2">@Model.Count(a => a.Status?.Name == "Cancelled")</h3>
+                        <h3 class="text-white mb-2">@allAppointments.Count(a => a.Status?.Name == "Cancelled")</h3>
                         <p class="mb-0"><i class="fa fa-times me-2"></i>Cancelled</p>
                     </div>
                 </div>
                 <div class="col-md-2 wow fadeInUp" data-wow-delay="0.6s">
                     <div class="bg-dark text-white rounded p-4 text-center">
-                        <h3 class="text-white mb-2">@Model.Count(a => a.Status?.Name == "Cancelled")</h3>
+                        <h3 class="text-white mb-2">@allAppointments.Count(a => a.Status?.Name == "Cancelled")</h3>
                         <p class="mb-0"><i class="fa fa-lock me-2"></i>Locked</p>
                         <small class="text-muted">Cannot modify</small>
                     </div>

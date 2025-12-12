@@ -55,10 +55,15 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="form-floating">
-                                        <input type="password" class="form-control" id="password" name="Password" placeholder="Password" required minlength="6">
+                                        <input type="password" class="form-control" id="password" name="Password" placeholder="Password" required minlength="8">
                                         <label for="password"><i class="fa fa-lock text-primary me-2"></i>Password *</label>
                                     </div>
-                                    <small class="text-muted">Minimum 6 characters required</small>
+                                    <small class="text-muted d-block mt-1">
+                                        <strong>Password must contain:</strong><br />
+                                        • At least 8 characters • One uppercase letter<br />
+                                        • One lowercase letter • One number<br />
+                                        • One special character (@@$!%*?&# etc.)
+                                    </small>
                                 </div>
                             </div>
                         </div>
